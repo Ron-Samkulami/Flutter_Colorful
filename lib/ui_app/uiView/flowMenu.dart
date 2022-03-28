@@ -5,8 +5,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 
+enum ExpandOrientation { left, up, right, down }
+
+List<IconData> menuItems = <IconData>[
+  Icons.home,
+  Icons.add_a_photo,
+  Icons.video_call,
+  Icons.settings,
+  Icons.keyboard_arrow_right,
+];
+
 class FlowMenu extends StatefulWidget {
-  const FlowMenu({Key? key}) : super(key: key);
+  const FlowMenu({
+    Key? key,
+    required this.expandOrientation,
+  }) : super(key: key);
+
+  final ExpandOrientation expandOrientation;
 
   @override
   _FlowMenuState createState() => _FlowMenuState();
@@ -16,20 +31,11 @@ class FlowMenu extends StatefulWidget {
 class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin {
   //成员变量
   late AnimationController menuAnimation;
-
-  final List<IconData> menuItems = <IconData>[
-    Icons.home,
-    Icons.add_a_photo,
-    Icons.video_call,
-    Icons.settings,
-    Icons.keyboard_arrow_up,
-  ];
-
   late IconData lastTapped;
 
   //成员方法
   void _updateMenu(IconData icon) {
-    if(icon != Icons.keyboard_arrow_up) {
+    if(icon != Icons.keyboard_arrow_right) {
       setState(() => lastTapped = icon);
     }
   }
@@ -73,7 +79,7 @@ class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Flow(
-      delegate: FlowMenuDelegate(menuAnimation: menuAnimation),
+      delegate: FlowMenuDelegate(menuAnimation: menuAnimation, expandOrientation: widget.expandOrientation),
       children: menuItems.map<Widget>((IconData icon) => flowMenuItem(icon)).toList(),
     );
   }
@@ -83,9 +89,13 @@ class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin
 
 
 class FlowMenuDelegate extends FlowDelegate {
-  FlowMenuDelegate({required this.menuAnimation}) : super(repaint: menuAnimation);
+  FlowMenuDelegate({
+    required this.menuAnimation,
+    required this.expandOrientation,
+  }) : super(repaint: menuAnimation);
 
   final Animation<double> menuAnimation;
+  final ExpandOrientation expandOrientation;
 
   @override
   bool shouldRepaint(covariant FlowMenuDelegate oldDelegate) {
@@ -97,10 +107,38 @@ class FlowMenuDelegate extends FlowDelegate {
     double dx = 0.0;
     for (int i = 0; i < context.childCount; i++) {
       dx = context.getChildSize(i)!.width * i;
-      context.paintChild(
-          i,
-        transform: Matrix4.translationValues(0, dx * menuAnimation.value, 0,),
-      );
+      switch(this.expandOrientation) {
+        case ExpandOrientation.left: {
+          context.paintChild(
+            i,
+            transform: Matrix4.translationValues(-dx * menuAnimation.value, 0, 0,),
+          );
+        }
+        break;
+        case ExpandOrientation.up: {
+          context.paintChild(
+            i,
+            transform: Matrix4.translationValues(0, -dx * menuAnimation.value, 0,),
+          );
+
+        }
+        break;
+        case ExpandOrientation.right: {
+          context.paintChild(
+            i,
+            transform: Matrix4.translationValues(dx * menuAnimation.value, 0, 0,),
+          );
+        }
+        break;
+        case ExpandOrientation.down: {
+          context.paintChild(
+            i,
+            transform: Matrix4.translationValues(0, dx * menuAnimation.value, 0,),
+          );
+        }
+        break;
+      }
+
     }
   }
 }
