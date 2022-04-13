@@ -153,6 +153,17 @@ class AppTheme {
 }
 
 
+//添加颜色描述信息
+class RSColor {
+  final String colorName;
+  final Color color;
+  const RSColor(this.colorName, this.color);
+
+  static const RSColor glacier = RSColor("glacier", AppTheme.glacier);
+}
+
+
+
 //色值字符串转化为颜色
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -171,7 +182,6 @@ class HexColor extends Color {
 //获取色值描述字符串
 class ColorDescription {
   static String hexColorValue(Color color) => _getHexColorValue(color.value);
-
   static String hexColorRedValue(Color color) => _getHexColorValue(color.red);
   static String hexColorGreenValue(Color color) => _getHexColorValue(color.green);
   static String hexColorBlueValue(Color color) => _getHexColorValue(color.blue);
@@ -183,4 +193,6 @@ class ColorDescription {
     }
     return stringValue;
   }
+
+
 }

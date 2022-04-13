@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/select_app.dart';
 
-import'package:flutter/rendering.dart';
+// import'package:flutter/rendering.dart';
+
+import 'package:flutter_app/ui_app/uiApp_home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,8 +66,10 @@ class MyApp extends StatelessWidget {
       //   });
       // },
       //
-      home: SelectAppPage(),
+      // home: SelectAppPage(),
+      home: UIAPPHomePage(title: "ColorFool",),
     );
+
   }
 }
 

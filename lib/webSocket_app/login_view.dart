@@ -1,8 +1,7 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import '../webSocket_app/webSocket.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -100,6 +99,19 @@ class _LoginPageState extends State<LoginPage> {
 
   void _doLogin(String userName, String password) {
     print('$userName-$password');
+
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (context) {
+          return new WebSocketPage(
+            title: 'WebSocketPage',
+            channel: new IOWebSocketChannel.connect(
+                'ws://echo.websocket.org'),
+          );
+        },
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override
