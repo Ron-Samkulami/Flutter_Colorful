@@ -52,6 +52,7 @@ class _MealsListViewState extends State<MealsListView>
               height: 216,
               width: double.infinity,
               child: ListView.builder(
+                // key: PageStorageKey(1), //保存当前位置信息的key
                 padding: const EdgeInsets.only(
                     top: 0, bottom: 0, right: 16, left: 16),
                 itemCount: mealsListData.length,

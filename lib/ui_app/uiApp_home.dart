@@ -1,13 +1,16 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/io.dart';
+
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/basic/macro.dart';
 import 'package:flutter_app/fitness_app/home_drawer.dart';
 import 'package:flutter_app/ui_app/uiView/flowMenu.dart';
 import 'package:flutter_app/ui_app/uiView/layoutBuilderRoute.dart';
-import 'package:web_socket_channel/io.dart';
 
 import '../webSocket_app/webSocket.dart';
+import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
+
 
 //主页
 class UIAPPHomePage extends StatefulWidget {
@@ -29,6 +32,8 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
   Icon btnIcon = Icon(Icons.check_box_outline_blank_outlined);
   bool _switchSelected = true; //维护单选开关状态
   bool _checkboxSelected = false; //维护复选框状态
+
+  String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   @override
   void initState() {
@@ -83,6 +88,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                 ),
               ),
               Switch(
+                activeColor: AppTheme.blueGreen,
                 value: _switchSelected, //当前状态
                 onChanged: (value) {
                   //重新构建页面
@@ -93,7 +99,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
               ),
               Checkbox(
                 value: _checkboxSelected,
-                activeColor: Colors.blue, //选中时的颜色
+                activeColor: AppTheme.blueGreen, //选中时的颜色
                 onChanged: (value) {
                   setState(() {
                     _checkboxSelected = value!;
@@ -120,27 +126,25 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
               ),
               SizedBox(
                 width: 150,
+                height: 30,
                 child: Flex(
                   direction: Axis.horizontal,
                   children: [
                     Expanded(
                       flex: 1,
                       child: Container(
-                        height: 30,
                         color: AppTheme.glacier,
                       ),
                     ),
                     Expanded(
                       flex: 2,
                       child: Container(
-                        height: 30,
                         color: AppTheme.glacier1,
                       ),
                     ),
                     Expanded(
                       flex: 3,
                       child: Container(
-                        height: 30,
                         color: AppTheme.glacierBlue,
                       ),
                     ),
@@ -148,17 +152,17 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 0, left: 0),
-                constraints: BoxConstraints.tightFor(width: 200.0, height: 100),
+                margin: EdgeInsets.only(top: 0, left: 30),
+                constraints: BoxConstraints.tightFor(width: 100.0, height: 60),
                 //卡片大小
                 decoration: BoxDecoration(
                   //背景装饰
                   gradient: RadialGradient(
                     //背景径向渐变
                     colors: [
-                      AppTheme.glacier,
+                      AppTheme.blueGreen2,
                       AppTheme.glacier1,
-                      AppTheme.glacier[800]!
+                      AppTheme.blueGreen
                     ],
                     center: Alignment.centerRight,
                     radius: 2.2,
@@ -172,7 +176,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                     )
                   ],
                 ),
-                transform: Matrix4.rotationZ(.3),
+                transform: Matrix4.rotationZ(.2),
                 //卡片倾斜变换
                 alignment: Alignment.center,
                 //卡片内文字居中
@@ -183,7 +187,24 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                       TextStyle(color: AppTheme.deepPlumPink, fontSize: 30.0),
                 ),
               ),
-
+              Container(
+                padding: EdgeInsets.all(5),
+                width: 60,
+                height: 190,
+                child: ListView.separated(
+                  key: PageStorageKey(13),
+                  itemCount: str.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if(index < str.length) {
+                      return Text(str[index], textScaleFactor: 1.5,);
+                    }
+                      return ListTile(title: Text("$index", textScaleFactor: 1.5,));
+                    },
+                  separatorBuilder: (BuildContext context, int index) {
+                      return index%2 == 0 ? Divider(color: Colors.blue,) : Divider(color: Colors.red,);
+                  },
+                ),
+              )
             ]
                 .map((e) => Padding(
                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -191,14 +212,12 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                     ))
                 .toList(),
           ),
-          SizedBox(
-            width: 20,
-          ),
+
           Container(
-            height: 700,
             width: 80,
             child: FlowMenu(expandOrientation: ExpandOrientation.down),
           ),
+
         ],
       ),
 
@@ -213,8 +232,8 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
 
       //悬浮按钮
       floatingActionButton: FloatingActionButton(
-        foregroundColor: AppTheme.glacier[500],
-        backgroundColor: AppTheme.glacier[400],
+        foregroundColor: AppTheme.glacier[400],
+        backgroundColor: AppTheme.deepPlumPink,
         onPressed: () { },
         child: Icon(Icons.add),
       ),
@@ -222,16 +241,16 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
-        color: AppTheme.glacier[600],
+        color: AppTheme.glacier,
         shape: CircularNotchedRectangle(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.home_outlined)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined)),
+            IconButton(onPressed: (){}, icon: Icon(Icons.home_outlined), color: AppTheme.glacier[400],),
+            IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined), color: AppTheme.glacier[400],),
             SizedBox(),
-            IconButton(onPressed: (){}, icon: Icon(Icons.business_outlined)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.people_outline_outlined)),
+            IconButton(onPressed: (){}, icon: Icon(Icons.business_outlined), color: AppTheme.glacier[400],),
+            IconButton(onPressed: (){}, icon: Icon(Icons.people_outline_outlined), color: AppTheme.glacier[400],),
           ],
         ),
       ),
@@ -336,6 +355,14 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                 // fullscreenDialog: true,
               ),
             );
+          } else if (result == popMenuItem.item3) {
+            Navigator.of(context).push(
+              new MaterialPageRoute(
+                  builder: (context) {
+                    return InfiniteListView();
+                  }),
+
+            );
           } else {
             Navigator.pushNamed(context, "new_page");
           }
@@ -344,15 +371,19 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
       itemBuilder: (BuildContext context) => <PopupMenuEntry<popMenuItem>>[
         const PopupMenuItem<popMenuItem>(
           value: popMenuItem.item1,
-          child: Text('PopMenu Item1'),
+          child: Text('WebSocket Page'),
         ),
         const PopupMenuItem<popMenuItem>(
           value: popMenuItem.item2,
-          child: Text('PopMenu Item2'),
+          child: Text('Layout Page'),
         ),
         const PopupMenuItem<popMenuItem>(
           value: popMenuItem.item3,
-          child: Text('PopMenu Item3'),
+          child: Text('ListView Page'),
+        ),
+        const PopupMenuItem<popMenuItem>(
+          value: popMenuItem.item4,
+          child: Text('Select App '),
         ),
       ],
     );

@@ -48,9 +48,9 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: 'User',
                       hintText: 'User name/ E-Mail',
                     ),
-                    cursorColor: Colors.red,
-                    cursorWidth: 5.0,
-                    cursorHeight: 50.0,
+                    // cursorColor: Colors.red,
+                    // cursorWidth: 5.0,
+                    // cursorHeight: 50.0,
                     validator: (v) {
                       return v!.trim().isNotEmpty ? null : 'UserName cannot be empty';
                     },
