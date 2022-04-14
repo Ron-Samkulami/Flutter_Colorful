@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -6,11 +5,14 @@ import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/basic/macro.dart';
 import 'package:flutter_app/fitness_app/home_drawer.dart';
 
-import 'package:flutter_app/ui_app/uiView/layoutBuilderRoute.dart';
+import 'package:flutter_app/ui_app/uiView/custom_tool/layoutBuilderRoute.dart';
 
 import '../webSocket_app/webSocket.dart';
 import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
-import 'uiView/ui_Unit.dart';
+import 'package:flutter_app/ui_app/tabPage/first_page.dart';
+import 'package:flutter_app/ui_app/tabPage/second_page.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/colorShowPage.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/RS_customScrollView.dart';
 
 //主页
 class UIAPPHomePage extends StatefulWidget {
@@ -25,17 +27,24 @@ class UIAPPHomePage extends StatefulWidget {
 //主页的状态
 class _UIAPPHomePageState extends State<UIAPPHomePage>
     with TickerProviderStateMixin {
-  final TextStyle _biggerFont = new TextStyle(fontSize: 18.0);
   AnimationController? animationController;
 
-
+  Widget tabBody = Container(
+    color: AppTheme.nearlyWhite,
+  );
 
   @override
   void initState() {
-    // TODO: implement initState
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
+    tabBody = FirstPage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,7 +53,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
       appBar: AppBar(
         title: Text(widget.title), //这里的widget代表状态所属的类
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _showFavoriteList),
+          IconButton(icon: Icon(Icons.list), onPressed: pushToAPage),
           popMenu(),
         ],
       ),
@@ -59,9 +68,20 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
         ),
       ),
 
-      body: UiUnitRoute(),
-
-      // body: SizedBox(),
+      body: FutureBuilder<bool>(
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Text("Loading Data"),
+            );
+          } else if (!snapshot.hasData) {
+            return const SizedBox();
+          } else {
+            return tabBody;
+          }
+        },
+      ),
 
       //右侧抽屉页
       endDrawer: Drawer(
@@ -76,7 +96,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
       floatingActionButton: FloatingActionButton(
         foregroundColor: AppTheme.glacier[400],
         backgroundColor: AppTheme.deepPlumPink,
-        onPressed: () { },
+        onPressed: () {},
         child: Icon(Icons.add),
       ),
 
@@ -88,20 +108,44 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.home_outlined), color: AppTheme.glacier[400],),
-            IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined), color: AppTheme.glacier[400],),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  tabBody = FirstPage();
+                });
+              },
+              icon: Icon(Icons.home_outlined),
+              color: AppTheme.glacier[400],
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  // tabBody = SizedBox(child: Expanded(flex: 1,child: Container(color: AppTheme.deepPlumPink,),),);
+                  tabBody = SecondPage();
+                });
+              },
+              icon: Icon(Icons.message_outlined),
+              color: AppTheme.glacier[400],
+            ),
             SizedBox(),
-            IconButton(onPressed: (){}, icon: Icon(Icons.business_outlined), color: AppTheme.glacier[400],),
-            IconButton(onPressed: (){}, icon: Icon(Icons.people_outline_outlined), color: AppTheme.glacier[400],),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.business_outlined),
+              color: AppTheme.glacier[400],
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.people_outline_outlined),
+              color: AppTheme.glacier[400],
+            ),
           ],
         ),
       ),
     );
-
   }
 
-//-------------------------------- Widgets -----------------------------
-//抽屉列表
+  ///-------------------------------- Widget -----------------------------
+  ///自定义抽屉
   Widget drawerView() {
     return ListView(
       padding: EdgeInsets.zero,
@@ -137,39 +181,44 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
                   CircleAvatar(
                     radius: 35.0,
                     backgroundColor: AppTheme.glacier[500],
-                    child: const Text('RS',textScaleFactor: 2,),
+                    child: const Text(
+                      'RS',
+                      textScaleFactor: 2,
+                    ),
                   ),
                   Spacer(),
                   SizedBox(
                     width: 100,
                     height: 30,
                     child: OutlinedButton.icon(
-                      style: ButtonStyle(
-                        alignment: Alignment.centerLeft,
-                        backgroundColor: MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.focused) && !states.contains(MaterialState.pressed)) {
-                            return AppTheme.glacierGrayBlue;
-                          } else if (states.contains(MaterialState.pressed)) {
-                            return AppTheme.pinkWhite;
-                          }
-                          return AppTheme.pinkWhite;
-                        }),
-                        overlayColor: MaterialStateProperty.resolveWith((states) {
-                          return AppTheme.glacier[400];
-                        })
-
-                      ),
-
-                        onPressed: (){},
+                        style: ButtonStyle(
+                            alignment: Alignment.centerLeft,
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith((states) {
+                              if (states.contains(MaterialState.focused) &&
+                                  !states.contains(MaterialState.pressed)) {
+                                return AppTheme.glacierGrayBlue;
+                              } else if (states
+                                  .contains(MaterialState.pressed)) {
+                                return AppTheme.pinkWhite;
+                              }
+                              return AppTheme.pinkWhite;
+                            }),
+                            overlayColor:
+                                MaterialStateProperty.resolveWith((states) {
+                              return AppTheme.glacier[400];
+                            })),
+                        onPressed: () {},
                         icon: Icon(Icons.edit),
                         label: Text("Edit")),
                   )
                 ],
               )
-            ].map((e) => Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: e,
-            ))
+            ]
+                .map((e) => Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: e,
+                    ))
                 .toList(),
           ),
         ),
@@ -201,7 +250,7 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
     );
   }
 
-  //右上角弹出菜单
+  ///右上角弹出菜单
   Widget popMenu() {
     return PopupMenuButton<popMenuItem>(
       shape: RoundedRectangleBorder(
@@ -227,14 +276,11 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
             );
           } else if (result == popMenuItem.item2) {
             Navigator.of(context).push(
-              new MaterialPageRoute(
-                  builder: (context) {
-                    return InfiniteListView();
-                  }),
+              new MaterialPageRoute(builder: (context) {
+                return InfiniteListView();
+              }),
             );
-          } else {
-
-          }
+          } else {}
         });
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<popMenuItem>>[
@@ -255,50 +301,21 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
     );
   }
 
-//-------------------------------- 方法 -----------------------------
-  //显示收藏列表
-  void _showFavoriteList() async {
-    String colorValueStr = ColorDescription.hexColorValue(RSColor.glacier.color);
-    String colorNameStr = RSColor.glacier.colorName;
+  ///-------------------------------- 方法 -----------------------------
+  ///
+  ///   /// 获取数据
+  Future<bool> getData() async {
+    await Future<dynamic>.delayed(const Duration(milliseconds: 500));
+    return true;
+  }
+
+  ///跳转到一个页
+  void pushToAPage() async {
     var result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                leading: Builder(
-                  builder: (BuildContext context) {
-                    return IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () =>
-                          Navigator.pop(context, "A return result"),
-                      tooltip: MaterialLocalizations.of(context)
-                          .openAppDrawerTooltip,
-                    );
-                  },
-                ),
-                title: Text('Saved Suggestions'),
-              ),
-              body: Center(
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith((states) {
-                          return RSColor.glacier.color;
-                        }),
-                      ),
-                      onPressed: _showFavoriteList,
-                      child: Text("$colorNameStr : $colorValueStr"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pop(context, "A return result"),
-                      child: Text("Backward"),
-                    )
-                  ],
-                ),
-              ));
+          // return ColorShowPage(rsColor: RSColor.creamYellow);
+          return RSCustomScrollView();
         },
       ),
     );

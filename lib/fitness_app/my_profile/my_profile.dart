@@ -4,7 +4,7 @@ import '../fitness_app_theme.dart';
 
 import 'package:flutter_app/fitness_app/ui_view/title_view.dart';
 import 'package:flutter_app/fitness_app/my_diary/meals_list_view.dart';
-import 'package:flutter_app/ui_app/uiView/highlight_button.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/highlight_button.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key,this.animationController}) : super(key: key);

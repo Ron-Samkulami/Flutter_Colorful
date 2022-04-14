@@ -155,11 +155,14 @@ class AppTheme {
 
 //添加颜色描述信息
 class RSColor {
-  final String colorName;
-  final Color color;
   const RSColor(this.colorName, this.color);
 
-  static const RSColor glacier = RSColor("glacier", AppTheme.glacier);
+  final String colorName;
+  final Color color;
+
+
+  static const RSColor glacier = RSColor("Glacier", AppTheme.glacier);
+  static const RSColor creamYellow = RSColor("CreamYellow", AppTheme.creamYellow);
 }
 
 
