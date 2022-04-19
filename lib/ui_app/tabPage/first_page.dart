@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/uiView/custom_tool/keep_alive_wrapper.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/com_buildSliverList.dart';
 
 class FirstPage extends StatefulWidget {
   // const FirstPage({Key? key}) :super(key: key);
@@ -16,7 +17,7 @@ class _FirstPageState extends State<FirstPage> {
   }
 }
 
-/// Page
+/// -------------- Page
 ///
 class Page extends StatefulWidget {
   const Page({Key? key, required this.text}) : super(key: key);
@@ -40,8 +41,7 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 }
 
-
-/// TabView
+/// -------------- TabViewPage
 ///
 class TabViewRoute1 extends StatefulWidget {
   @override
@@ -50,10 +50,6 @@ class TabViewRoute1 extends StatefulWidget {
 
 class _TabViewRoute1State extends State<TabViewRoute1>
     with SingleTickerProviderStateMixin {
-  // late TabController _tabController;
-  List tabs = ["新闻", "历史", "图片"];
-  List<Widget> childPage = List<Widget>.generate(5, (index) => Page(text: '$index'));
-
   @override
   void initState() {
     super.initState();
@@ -62,46 +58,9 @@ class _TabViewRoute1State extends State<TabViewRoute1>
 
   @override
   Widget build(BuildContext context) {
-
     //使用DefaultTabController 时，不需要指定 TabController
-    return DefaultTabController(
-        // initialIndex: 2,
-        length: tabs.length,
-        child: Column(
-          children: [
-            Container(
-              color: AppTheme.lightPlumPink,
-              child: TabBar(
-                  // controller: _tabController,
-                  tabs: tabs.map((e) => Tab(child: Text(e,style: TextStyle(
-                    color: AppTheme.glacier,
-                  ),),)).toList(),
-                ),
-            ),
-
-            Expanded(child: TabBarView(
-              //构建
-              // controller: _tabController,
-              children: [
-                KeepAliveWrapper(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: PageView (
-                      // scrollDirection: Axis.vertical, // 滑动方向为垂直方向
-                      children: childPage,
-                      // allowImplicitScrolling: true, //true时缓存，但是只能缓存前后两个页面
-                    ),
-                  ),
-                ),
-                KeepAliveWrapper(
-                  child: buildTwoSliverList(),
-                ),
-                buildTwoSliverList(),
-              ],
-            ))
-          ],
-        )
-    );
+    return DefaultFirstPage();
+    return NestedTabBarView1();
   }
 
   @override
@@ -112,39 +71,178 @@ class _TabViewRoute1State extends State<TabViewRoute1>
   }
 }
 
+/// ----
+class DefaultFirstPage extends StatefulWidget {
+  @override
+  _DefaultFirstPageState createState() => _DefaultFirstPageState();
+}
 
-Widget buildTwoSliverList() {
-  // SliverFixedExtentList 是一个 Sliver，它可以生成高度相同的列表项。
-  // 再次提醒，如果列表项高度相同，我们应该优先使用SliverFixedExtentList
-  // 和 SliverPrototypeExtentList，如果不同，使用 SliverList.
-  var fixedExtentlistView = SliverFixedExtentList(
-    itemExtent: 56, //列表项高度固定
-    delegate: SliverChildBuilderDelegate(
-          (_, index) => ListTile(title: Text('$index')),
-      childCount: 10,
+class _DefaultFirstPageState extends State<DefaultFirstPage>
+    with SingleTickerProviderStateMixin {
+  final _Toptabs = <String>["资讯", "娱乐"];
+  late List _tabs;
+  late List _firstTabs = <String>["新闻", "历史", "图片"];
+  late List _secondTabs = <String>["电影", "音乐"];
+  List<Widget> childPage =
+      List<Widget>.generate(5, (index) => Page(text: '$index'));
+  late Widget _tabBody;
+  late Widget _firstTabBody;
+  late Widget _secondTabBody;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _Toptabs.length, vsync: this);
+    _tabController.addListener(() {});
+
+    //第一Tab
+    _firstTabs = <String>["新闻", "历史", "图片"];
+    _firstTabBody = TabBarView(
+      //构建
+      // controller: _tabController,
+      children: [
+        KeepAliveWrapper(
+          child: Container(
+            alignment: Alignment.center,
+            child: PageView(
+              // scrollDirection: Axis.vertical, // 滑动方向为垂直方向
+              children: childPage,
+              // allowImplicitScrolling: true, //true时缓存，但是只能缓存前后两个页面
+            ),
+          ),
+        ),
+        KeepAliveWrapper(
+          child: buildTwoSliverList(),
+        ),
+        buildTwoSliverList(),
+      ],
+    );
+
+    //第二Tab
+    _secondTabs = <String>["电影", "音乐"];
+    _secondTabBody = TabBarView(
+      //构建
+      // controller: _tabController,
+      children: [
+        KeepAliveWrapper(
+          child: Container(
+            alignment: Alignment.center,
+            child: PageView(
+              // scrollDirection: Axis.vertical, // 滑动方向为垂直方向
+              children: childPage,
+              // allowImplicitScrolling: true, //true时缓存，但是只能缓存前后两个页面
+            ),
+          ),
+        ),
+        KeepAliveWrapper(
+          child: buildTwoSliverList(),
+        ),
+      ],
+    );
+
+    //默认显示第一Tab
+    _tabs = _firstTabs;
+    _tabBody = _firstTabBody;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        // initialIndex: 2,
+        length: _tabs.length,
+        child: Column(
+          children: [
+            Container(
+              color: AppTheme.glacier[400],
+              child: TabBar(
+                controller: _tabController,
+                onTap: (int index) {
+                  setState(() {
+                    _tabs = index == 0 ? _firstTabs : _secondTabs;
+                    _tabBody = index == 0 ? _firstTabBody : _secondTabBody;
+                  });
+                },
+                tabs: getTabBarTabs(_Toptabs),
+              ),
+            ),
+            Container(
+              color: AppTheme.lightPlumPink,
+              child: TabBar(
+                tabs: getTabBarTabs(_tabs),
+              ),
+            ),
+            Expanded(child: _tabBody)
+          ],
+        ));
+  }
+}
+
+List<Widget> getTabBarTabs(List list) {
+  return list
+      .map((e) => Tab(
+    child: Text(
+      e,
+      style: TextStyle(
+        color: AppTheme.glacier,
+      ),
     ),
-  );
+  ))
+      .toList();
+}
 
-  var listViewDivider = SliverFixedExtentList(
-    itemExtent: 2, //列表项高度固定
-    delegate: SliverChildBuilderDelegate((_, index) => ListTile(tileColor: AppTheme.glacier),
-      childCount: 1,
-    ),
-  );
+/// ------ 嵌套 tabView ---------
+class NestedTabBarView1 extends StatelessWidget {
+  const NestedTabBarView1({Key? key}) : super(key: key);
 
-  var sliverListView = SliverList(
-    delegate: SliverChildBuilderDelegate(
-        (_, index)  => ListTile(tileColor: AppTheme.lightPlumPink,title: Text("$index"),),
-            childCount: 10,
-    ),
-  );
-
-  // 使用
-  return CustomScrollView(
-    slivers: [
-      fixedExtentlistView,
-      listViewDivider,
-      sliverListView,
-    ],
-  );
+  @override
+  Widget build(BuildContext context) {
+    final _tabs = <String>['猜你喜欢', '今日特价', '发现更多'];
+    // 构建 tabBar
+    return DefaultTabController(
+      length: _tabs.length, // This is the number of tabs.
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  title: const Text('商城'),
+                  floating: true,
+                  snap: true,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                    tabs: _tabs.map((String name) => Tab(text: name)).toList(),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            children: _tabs.map((String name) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    key: PageStorageKey<String>(name),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.all(8.0),
+                        sliver: buildSliverList(50),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -11,8 +11,12 @@ import '../webSocket_app/webSocket.dart';
 import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
 import 'package:flutter_app/ui_app/tabPage/first_page.dart';
 import 'package:flutter_app/ui_app/tabPage/second_page.dart';
+
+
 import 'package:flutter_app/ui_app/uiView/custom_ui/colorShowPage.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/RS_customScrollView.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/customSliver.dart';
+import 'package:flutter_app/ui_app/uiView/custom_ui/nested_scrollView.dart';
 
 //主页
 class UIAPPHomePage extends StatefulWidget {
@@ -315,8 +319,10 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
       MaterialPageRoute(
         builder: (context) {
           // return ColorShowPage(rsColor: RSColor.creamYellow);
-          return RSCustomScrollView();
+          // return RSCustomScrollView();
+          return NestedScrollViewPage();
         },
+
       ),
     );
     print("路由返回值：$result");

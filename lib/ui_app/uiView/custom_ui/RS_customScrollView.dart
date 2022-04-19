@@ -21,6 +21,7 @@ class _RSCustomScrollViewState extends State<RSCustomScrollView> {
             // pinned: true, // 滑动到顶端时会固定住
             // floating: true,// pinned为true时生效，当floating为true时，下拉马上就出现appBar
 
+            // leading: Text(""),
             expandedHeight: 250.0,
             title: Text("title"),
             backgroundColor: AppTheme.glacierBlue,
