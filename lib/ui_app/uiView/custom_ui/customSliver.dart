@@ -29,18 +29,18 @@ class _CustomSliverPageState extends State<CustomSliverPage> {
           title: Text('CustomSliverPage'),
         ),
         body: Material(
-          child: customSliver(),
+          child: RSCustomSliver(),
         ));
   }
 }
 
 /// ----------------------- customSliver -------------------
-class customSliver extends StatefulWidget {
+class RSCustomSliver extends StatefulWidget {
   @override
-  customSliverState createState() => customSliverState();
+  _RSCustomSliverState createState() => _RSCustomSliverState();
 }
 
-class customSliverState extends State<customSliver> {
+class _RSCustomSliverState extends State<RSCustomSliver> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(

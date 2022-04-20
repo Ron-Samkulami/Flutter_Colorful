@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_app/basic/app_theme.dart';
-import 'package:flutter_app/ui_app/uiView/custom_ui/customSliver.dart';
 import 'com_buildSliverList.dart';
 
 class NestedScrollViewPage extends StatefulWidget {
@@ -10,7 +7,7 @@ class NestedScrollViewPage extends StatefulWidget {
 }
 
 class _NestedScrollViewPageState extends State<NestedScrollViewPage> {
-  DateTime? _lastPressedAt; //上次点击时间
+  // DateTime? _lastPressedAt; //上次点击时间
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +55,6 @@ class _NestedScrollViewPageState extends State<NestedScrollViewPage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               // 实现 snap 效果
-              // SliverAppBar(
-              //   floating: true,
-              //   snap: true, //floating为true时才有效，捏合或轻划时出现
-              //   expandedHeight: 200,
-              //   forceElevated: innerBoxIsScrolled,
-              //   flexibleSpace: FlexibleSpaceBar(
-              //     background: Image.asset(
-              //       "./imgs/sea.png",
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // ),
               SliverOverlapAbsorber(
                 ///包装在 SliverOverlapAbsorber 中，解决snap 遮挡内容的问题
                 handle:
@@ -99,21 +84,3 @@ class _NestedScrollViewPageState extends State<NestedScrollViewPage> {
     );
   }
 }
-
-// 构建列表项
-// Widget buildSliverList(itemCount) {
-//   return SliverFixedExtentList(
-//     itemExtent: 50.0,
-//     delegate: SliverChildBuilderDelegate(
-//           (BuildContext context, int index) {
-//         //创建列表项
-//         return Container(
-//           alignment: Alignment.center,
-//           color: AppTheme.deepPlumPink.withOpacity(((index + 1) / itemCount)),
-//           child: Text('list item $index'),
-//         );
-//       },
-//       childCount: itemCount,
-//     ),
-//   );
-// }

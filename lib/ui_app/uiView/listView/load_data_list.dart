@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter_app/basic/app_theme.dart';
 
 class LoadDataListRoute extends StatefulWidget {
   const LoadDataListRoute({Key? key, this.scrollController}) : super(key: key);
@@ -74,7 +73,7 @@ class _LoadDataListRouteState extends State<LoadDataListRoute> {
               }
             }
             //显示单词列表项
-            return ListTile(title: Text("${index}--${_words[index]}"));
+            return ListTile(title: Text("$index--${_words[index]}"));
           },
           separatorBuilder: (context, index) => Divider(height: .0),
         ),

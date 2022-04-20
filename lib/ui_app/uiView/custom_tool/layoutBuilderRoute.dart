@@ -1,7 +1,5 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/basic/layoutTool.dart';
 
 class LayoutBuilderRoute extends StatelessWidget {

@@ -37,8 +37,7 @@ class AppTheme {
   );
   static const int _glacierPrimaryValue = 0xFF5A736D;
 
-
-  static const Color _glacier = Color(0xFFE3EAF0);
+  static const Color glacierAncestor = Color(0xFFE3EAF0);
   static const Color coldGray = Color(0xFFC3D6DD);
   static const Color deepCreamGreen = Color(0xFF8EB69D);
   static const Color creamGreen = Color(0xFFA7C9AF);

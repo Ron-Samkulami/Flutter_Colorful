@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
 
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/basic/macro.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_app/fitness_app/home_drawer.dart';
 
 import 'package:flutter_app/ui_app/uiView/custom_tool/layoutBuilderRoute.dart';
 
-import '../webSocket_app/webSocket.dart';
 import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
 import 'package:flutter_app/ui_app/tabPage/first_page.dart';
 import 'package:flutter_app/ui_app/tabPage/second_page.dart';
@@ -318,9 +316,9 @@ class _UIAPPHomePageState extends State<UIAPPHomePage>
     var result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          // return ColorShowPage(rsColor: RSColor.creamYellow);
+          return ColorShowPage(rsColor: RSColor.creamYellow);
           // return RSCustomScrollView();
-          return NestedScrollViewPage();
+          // return NestedScrollViewPage();
         },
 
       ),

@@ -27,6 +27,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>@"ColorFool需要访问相机以启用摄像功能"</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>@"ColorFool需要访问麦克风以启用摄像功能"</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>@"允许ColorFool向本地相册添加图片"</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>@"ColorFool需要访问本地相册以选取图片"</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

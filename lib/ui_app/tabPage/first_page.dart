@@ -60,7 +60,7 @@ class _TabViewRoute1State extends State<TabViewRoute1>
   Widget build(BuildContext context) {
     //使用DefaultTabController 时，不需要指定 TabController
     return DefaultFirstPage();
-    return NestedTabBarView1();
+    // return NestedTabBarView1();
   }
 
   @override
@@ -79,7 +79,7 @@ class DefaultFirstPage extends StatefulWidget {
 
 class _DefaultFirstPageState extends State<DefaultFirstPage>
     with SingleTickerProviderStateMixin {
-  final _Toptabs = <String>["资讯", "娱乐"];
+  final _toptabs = <String>["资讯", "娱乐"];
   late List _tabs;
   late List _firstTabs = <String>["新闻", "历史", "图片"];
   late List _secondTabs = <String>["电影", "音乐"];
@@ -93,7 +93,7 @@ class _DefaultFirstPageState extends State<DefaultFirstPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _Toptabs.length, vsync: this);
+    _tabController = TabController(length: _toptabs.length, vsync: this);
     _tabController.addListener(() {});
 
     //第一Tab
@@ -163,7 +163,7 @@ class _DefaultFirstPageState extends State<DefaultFirstPage>
                     _tabBody = index == 0 ? _firstTabBody : _secondTabBody;
                   });
                 },
-                tabs: getTabBarTabs(_Toptabs),
+                tabs: getTabBarTabs(_toptabs),
               ),
             ),
             Container(
