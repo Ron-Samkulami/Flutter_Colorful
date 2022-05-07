@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +15,15 @@ void main() async {
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
-  ]).then((_) => runApp(MyApp()));
+  ]).then((_) {
+    runZoned(() {
+      //init third party sdk
+
+      //run app
+      runApp(MyApp());
+    });
+
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +52,7 @@ class MyApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
     return MaterialApp(
+      restorationScopeId: 'Colorfool',
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -67,7 +77,7 @@ class MyApp extends StatelessWidget {
       // },
       //
       // home: SelectAppPage(),
-      home: UIAPPHomePage(title: "ColorFool",),
+      home: UIAPPHomePage(),
     );
 
   }

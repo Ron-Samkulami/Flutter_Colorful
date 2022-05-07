@@ -31,6 +31,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     });
     tabIconsList[0].isSelected = true;
 
+    /// vsync 需要传入一个TickerProvider, 一般在state中混入TickerProviderStateMixin
     animationController = AnimationController(duration: const Duration(milliseconds: 600), vsync: this);
     //默认显示的第一个页面
     tabBody = MyDiaryScreen(animationController: animationController);

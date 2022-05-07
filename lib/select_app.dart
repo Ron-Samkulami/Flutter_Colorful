@@ -64,6 +64,7 @@ class _SelectAppPageState extends State<SelectAppPage>
                         if (!snapshot.hasData) {
                           return const SizedBox();
                         } else {
+                          /// Builder方式创建
                           return GridView.builder(
                             itemCount: homeList.length,
                             padding: const EdgeInsets.only(
@@ -73,7 +74,7 @@ class _SelectAppPageState extends State<SelectAppPage>
                             itemBuilder: (context, index) {
                               final int count = homeList.length;
                               final Animation<double> animation =
-                              Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
                                 CurvedAnimation(
                                   parent: animationController!,
                                   curve: Interval((1 / count) * index, 1.0,
@@ -90,63 +91,32 @@ class _SelectAppPageState extends State<SelectAppPage>
                                     context,
                                     MaterialPageRoute<dynamic>(
                                       builder: (BuildContext context) =>
-                                      homeList[index].navigateScreen!,
+                                          homeList[index].navigateScreen!,
                                     ),
                                   );
                                 },
                               );
                             },
                             gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: multiple ? 2 : 1,
                               mainAxisSpacing: 12.0,
                               crossAxisSpacing: 12.0,
                               childAspectRatio: 1.5,
                             ),
-
                           );
-                          //以下为另一种方式
-                          //return GridView(
+
+                          /// 非Builder方式
+                          // return GridView(
                           //   padding: const EdgeInsets.only(
                           //       top: 0, left: 12, right: 12),
                           //   physics: const BouncingScrollPhysics(),
                           //   scrollDirection: Axis.vertical,
                           //   children: List<Widget>.generate(
                           //     homeList.length,
-                          //         (int index) {
-                          //       final int count = homeList.length;
-                          //       final Animation<double> animation =
-                          //       Tween<double>(begin: 0.0, end: 1.0).animate(
-                          //         CurvedAnimation(
-                          //           parent: animationController!,
-                          //           curve: Interval((1 / count) * index, 1.0,
-                          //               curve: Curves.fastOutSlowIn),
-                          //         ),
-                          //       );
-                          //       animationController?.forward();
-                          //       return HomeListView(
-                          //         animation: animation,
-                          //         animationController: animationController,
-                          //         listData: homeList[index],
-                          //         callBack: () {
-                          //           Navigator.push<dynamic>(
-                          //             context,
-                          //             MaterialPageRoute<dynamic>(
-                          //               builder: (BuildContext context) =>
-                          //               homeList[index].navigateScreen!,
-                          //             ),
-                          //           );
-                          //         },
-                          //       );
-                          //     },
+                          //         (int index) {...},
                           //   ),
-                          //   gridDelegate:
-                          //   SliverGridDelegateWithFixedCrossAxisCount(
-                          //     crossAxisCount: multiple ? 2 : 1,
-                          //     mainAxisSpacing: 12.0,
-                          //     crossAxisSpacing: 12.0,
-                          //     childAspectRatio: 1.5,
-                          //   ),
+                          //   gridDelegate:...,
                           // );
                         }
                       },
@@ -167,6 +137,10 @@ class _SelectAppPageState extends State<SelectAppPage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.navigate_before),
+            onPressed: () => Navigator.pop(context),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 8, left: 8),
             child: Container(

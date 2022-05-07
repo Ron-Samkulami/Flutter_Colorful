@@ -38,13 +38,13 @@ class _ColorShowPageState extends State<ColorShowPage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.pop(context, "A return result"),
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.pop(context, "A return result"),
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              );
+            },
         ),
         title: Text('Color Page'),
       ),
@@ -52,10 +52,10 @@ class _ColorShowPageState extends State<ColorShowPage> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(8),
               child: SizedBox(
-                width: 200,
-                height: 50,
+                width: 150,
+                height: 30,
                 child: ColoredBox(
                   color: widget.rsColor.color,
                 ),
@@ -63,38 +63,95 @@ class _ColorShowPageState extends State<ColorShowPage> {
             ),
             Text(
               "$colorNameStr : $colorValueStr",
-              // textScaleFactor: 1.2,
             ),
+
+            /// 图片框
             Container(
-              height: 300,
+              height: 250,
               alignment: Alignment.center,
               margin: EdgeInsets.all(20),
               child: _image,
             ),
-            Text(
-              "当前图片颜色 : $_imageColor",
+
+
+            /// 提色器
+            Container(
+              height: 50,
+              alignment: Alignment.center,
+              child: FittedBox(
+                fit: BoxFit.none,
+                child: FutureBuilder<List<int>?>(
+                  // initialData: ,
+                  future: getImageColorString(_image),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (snapshot.hasData){
+                        String _imageColor = "";
+                        List<int> colorList = snapshot.data;
+                        colorList.forEach((element) { _imageColor += '$element-';});
+                        colorList.forEach(print);
+
+                        return Column(
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              height: 35,
+                              child: ColoredBox(
+                                color: Color.fromARGB(255, colorList[0],
+                                    colorList[1], colorList[2]),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 5),
+                              child: Text(
+                                  "当前颜色：${_imageColor.substring(0, _imageColor.length - 1)}"),
+                            )
+                          ],
+                        );
+                      } else {
+                        return Text("空白图片");
+                      }
+                    } else {
+                      return CircularProgressIndicator();
+                      return Text("正在加载颜色");
+                    }
+                  },
+                ),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () => showImagePicker(),
-              child: Text("Pick Image"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                getImageColorString(_image);
-              },
-              child: Text("print color"),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    onPressed: () => showImagePicker(),
+                    child: Text("Pick Image"),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    onPressed: () => setState(() {}),
+                    child: Text("print color"),
+                  ),
+                )
+              ],
             )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showImagePicker();
-        },
-        child: Center(
-          child: Text("Add"),
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     showImagePicker();
+      //   },
+      //   child: Center(
+      //     child: Text("Add"),
+      //   ),
+      // ),
     );
   }
 
@@ -118,25 +175,11 @@ class _ColorShowPageState extends State<ColorShowPage> {
             ));
   }
 
-
-
+@pragma('get')
   /// 从图片解析颜色
-  Future<String> getImageColorString(Image image) async {
-    String _colorStr = "";
+/// Future<List<int>?> 返回类型可以省略?
+Future<List<int>?> getImageColorString(Image image) async {
     ui.Image uiImage = await ImageUtils.loadImageByProvider(image.image);
-    getColorFromImage(uiImage).then((color) {
-      print('识别到颜色值- $color');
-      if (color != null) {
-        for(int i = 0; i < color.length; i++) {
-          _colorStr = _colorStr + '${color[i]}-';
-        }
-        // print('颜色值：$_colorStr');
-        setState(() {
-          _imageColor = _colorStr;
-        });
-      }
-    });
-    return _colorStr;
+    return getColorFromImage(uiImage);
   }
-
 }

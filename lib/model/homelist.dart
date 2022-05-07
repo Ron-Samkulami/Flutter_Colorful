@@ -21,7 +21,7 @@ class HomeList {
     ),
     HomeList(
       imagePath: 'assets/introduction_animation/introduction_animation.png',
-      navigateScreen: UIAPPHomePage(title: 'UIAPP',),
+      navigateScreen: UIAPPHomePage(),
     ),
     HomeList(
       imagePath: 'assets/hotel/hotel_booking.png',

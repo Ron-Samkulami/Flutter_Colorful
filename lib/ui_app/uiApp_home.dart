@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_app/basic/app_theme.dart';
-import 'package:flutter_app/basic/macro.dart';
-import 'package:flutter_app/fitness_app/home_drawer.dart';
-
-import 'package:flutter_app/ui_app/uiView/custom_tool/layoutBuilderRoute.dart';
-
-import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
+import 'package:flutter_app/ui_app/tabPage/mine_page.dart';
 import 'package:flutter_app/ui_app/tabPage/first_page.dart';
 import 'package:flutter_app/ui_app/tabPage/second_page.dart';
+import 'package:flutter_app/ui_app/tabPage/third_page.dart';
 
+import 'package:flutter_app/ui_app/uiView/animation/mySlideTransition.dart';
 
-import 'package:flutter_app/ui_app/uiView/custom_ui/colorShowPage.dart';
-import 'package:flutter_app/ui_app/uiView/custom_ui/RS_customScrollView.dart';
-import 'package:flutter_app/ui_app/uiView/custom_ui/customSliver.dart';
-import 'package:flutter_app/ui_app/uiView/custom_ui/nested_scrollView.dart';
+import '../select_app.dart';
 
 //主页
 class UIAPPHomePage extends StatefulWidget {
-  UIAPPHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  UIAPPHomePage({Key? key}) : super(key: key);
 
   @override
   _UIAPPHomePageState createState() => _UIAPPHomePageState();
@@ -29,300 +20,312 @@ class UIAPPHomePage extends StatefulWidget {
 //主页的状态
 class _UIAPPHomePageState extends State<UIAPPHomePage>
     with TickerProviderStateMixin {
-  AnimationController? animationController;
+  late PageController _pageController;
 
-  Widget tabBody = Container(
-    color: AppTheme.nearlyWhite,
-  );
+  int _tabIndex = 0;
+  List _tabBody = [
+    FirstPage(),
+    SecondPage(),
+    null,
+    ThirdPage(),
+    MinePage(),
+  ];
+
+  int selectedIndex = 0;
+  bool ltr = true;
 
   @override
   void initState() {
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
-    tabBody = FirstPage();
+    _pageController = new PageController(initialPage: _tabIndex);
     super.initState();
   }
 
   @override
   void dispose() {
-    animationController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title), //这里的widget代表状态所属的类
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: pushToAPage),
-          popMenu(),
-        ],
-      ),
+      drawer: buildDrawerView(),
 
-      //左侧抽屉页
-      drawer: Drawer(
-        // backgroundColor: AppTheme.creamGreen2,
-        child: MediaQuery.removePadding(
-          context: context,
-          // removeTop: true,
-          child: drawerView(),
-        ),
-      ),
+      /// FutureBuilder + 自定义页面切换动画
+      // body: FutureBuilder<bool>(
+      //   future: getData(),
+      //   builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return Center(
+      //         child: Text("Loading Data"),
+      //       );
+      //     } else if (!snapshot.hasData) {
+      //       return const SizedBox();
+      //     } else {
+      //       return AnimatedSwitcher(///使用切换动画
+      //         duration: const Duration(milliseconds: 600),
+      //         ///默认为渐隐渐显动画，可以指定为其他动画
+      //         transitionBuilder: (Widget child, Animation<double> animation) {
+      //           //自定义平移效果
+      //           return SlideTransitionX(
+      //             child: child,
+      //             direction: ltr ? AxisDirection.left : AxisDirection.right,
+      //             position: animation,
+      //           );
+      //         },
+      //         child: tabBody,
+      //       );
+      //     }
+      //   },
+      // ),
 
-      body: FutureBuilder<bool>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Text("Loading Data"),
-            );
-          } else if (!snapshot.hasData) {
-            return const SizedBox();
-          } else {
-            return tabBody;
-          }
+      body: PageView.builder(
+        onPageChanged: onPageChange,
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          return _tabBody[index];
         },
-      ),
-
-      //右侧抽屉页
-      endDrawer: Drawer(
-        child: HomeDrawer(
-          screenIndex: DrawerIndex.HOME,
-          iconAnimationController: AnimationController(
-              vsync: this, duration: const Duration(milliseconds: 1000)),
-        ),
+        itemCount: _tabBody.length,
       ),
 
       //悬浮按钮
       floatingActionButton: FloatingActionButton(
-        foregroundColor: AppTheme.glacier[400],
-        backgroundColor: AppTheme.deepPlumPink,
-        onPressed: () {},
+        foregroundColor: AppTheme.glacier[500],
+        backgroundColor: AppTheme.creamYellow,
+        elevation: 5,
+        heroTag: 'add',
+        onPressed: showAddPage,
         child: Icon(Icons.add),
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      bottomNavigationBar: BottomAppBar(
-        color: AppTheme.glacier,
-        shape: CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  tabBody = FirstPage();
-                });
-              },
-              icon: Icon(Icons.home_outlined),
-              color: AppTheme.glacier[400],
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  // tabBody = SizedBox(child: Expanded(flex: 1,child: Container(color: AppTheme.deepPlumPink,),),);
-                  tabBody = SecondPage();
-                });
-              },
-              icon: Icon(Icons.message_outlined),
-              color: AppTheme.glacier[400],
-            ),
-            SizedBox(),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.business_outlined),
-              color: AppTheme.glacier[400],
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.people_outline_outlined),
-              color: AppTheme.glacier[400],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ///-------------------------------- Widget -----------------------------
-  ///自定义抽屉
-  Widget drawerView() {
-    return ListView(
-      padding: EdgeInsets.zero,
-      children: <Widget>[
-        DrawerHeader(
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              //背景径向渐变
-              colors: [AppTheme.glacier1, AppTheme.glacier[800]!],
-              center: Alignment.bottomRight,
-              radius: 2,
-            ),
-            // color: AppTheme.glacierGrayBlue,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: AppTheme.deepPlumPink,
-                  fontSize: 24,
-                  shadows: [
-                    Shadow(
-                        color: AppTheme.darkBlueGreen,
-                        blurRadius: 1,
-                        offset: Offset(1.5, 1.5))
-                  ],
-                ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppTheme.nearlyWhite,
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined), label: 'home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.message_outlined), label: 'message'),
+          BottomNavigationBarItem(
+              icon: SizedBox(
+                height: 30,
               ),
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 35.0,
-                    backgroundColor: AppTheme.glacier[500],
-                    child: const Text(
-                      'RS',
-                      textScaleFactor: 2,
-                    ),
-                  ),
-                  Spacer(),
-                  SizedBox(
-                    width: 100,
-                    height: 30,
-                    child: OutlinedButton.icon(
-                        style: ButtonStyle(
-                            alignment: Alignment.centerLeft,
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.focused) &&
-                                  !states.contains(MaterialState.pressed)) {
-                                return AppTheme.glacierGrayBlue;
-                              } else if (states
-                                  .contains(MaterialState.pressed)) {
-                                return AppTheme.pinkWhite;
-                              }
-                              return AppTheme.pinkWhite;
-                            }),
-                            overlayColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              return AppTheme.glacier[400];
-                            })),
-                        onPressed: () {},
-                        icon: Icon(Icons.edit),
-                        label: Text("Edit")),
-                  )
-                ],
-              )
-            ]
-                .map((e) => Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: e,
-                    ))
-                .toList(),
+              label: ''),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.games_outlined),
+            label: 'game',
           ),
-        ),
-        ListTile(
-          leading: Icon(Icons.message),
-          title: Text('Messages'),
-        ),
-        ListTile(
-          leading: Icon(Icons.account_circle),
-          title: Text('Profile'),
-        ),
-        ListTile(
-          leading: Icon(Icons.settings),
-          title: Text('Settings'),
-        ),
-        ListTile(
-          leading: Icon(Icons.more),
-          title: Text('More App'),
-          onTap: () => Navigator.pushNamed(context, "new_page"),
-        ),
-        Chip(
-          avatar: CircleAvatar(
-            backgroundColor: AppTheme.glacier[300],
-            child: const Text('RS'),
-          ),
-          label: const Text('Ron Samkulami'),
-        ),
-      ],
-    );
-  }
-
-  ///右上角弹出菜单
-  Widget popMenu() {
-    return PopupMenuButton<popMenuItem>(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(
-          width: 2,
-          color: Colors.white,
-          style: BorderStyle.none,
-        ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people_outline_outlined), label: 'mine')
+        ],
+        // selectedLabelStyle: TextStyle(
+        //     color: AppTheme.nearlyWhite, fontSize: AppTheme.title.fontSize),
+        // unselectedLabelStyle: TextStyle(
+        //     color: AppTheme.glacier[400], fontSize: AppTheme.title.fontSize),
+        // showSelectedLabels: true,
+        // showUnselectedLabels: false,
+        selectedIconTheme: IconThemeData(color: AppTheme.glacier),
+        unselectedIconTheme: IconThemeData(color: AppTheme.glacier[700]),
+        // selectedItemColor: AppTheme.glacier,
+        unselectedItemColor: AppTheme.glacier[700],
+        currentIndex: _tabIndex,
+        fixedColor: AppTheme.glacier,
+        iconSize: 26.0,
+        onTap: onItemTapped,
       ),
-      offset: Offset(0.0, 5.0),
-      color: Colors.white,
-      onSelected: (popMenuItem result) {
-        setState(() {
-          if (result == popMenuItem.item1) {
-            Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (context) {
-                  return LayoutBuilderRoute();
-                },
-                // fullscreenDialog: true,
-              ),
-            );
-          } else if (result == popMenuItem.item2) {
-            Navigator.of(context).push(
-              new MaterialPageRoute(builder: (context) {
-                return InfiniteListView();
-              }),
-            );
-          } else {}
-        });
-      },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<popMenuItem>>[
-        const PopupMenuItem<popMenuItem>(
-          value: popMenuItem.item1,
-          child: Text('Layout Page'),
-          // onTap: () => print("item上的点击事件");,  //const修饰时，不能写onTap，onTap内无法完成跳转
-        ),
-        const PopupMenuItem<popMenuItem>(
-          value: popMenuItem.item2,
-          child: Text('ListView Page'),
-        ),
-        const PopupMenuItem<popMenuItem>(
-          value: popMenuItem.item3,
-          child: Text('TODO'),
-        ),
-      ],
     );
   }
 
   ///-------------------------------- 方法 -----------------------------
   ///
-  ///   /// 获取数据
+  /// 获取数据
   Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 500));
+    await Future<dynamic>.delayed(const Duration(milliseconds: 100));
     return true;
   }
 
-  ///跳转到一个页
-  void pushToAPage() async {
-    var result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return ColorShowPage(rsColor: RSColor.creamYellow);
-          // return RSCustomScrollView();
-          // return NestedScrollViewPage();
-        },
+  onPageChange(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
+  }
 
+  onItemTapped(int index) {
+    if (index == 2) {
+      showAddPage();
+    } else {
+      _pageController.jumpToPage(index);
+      onPageChange(index);
+    }
+  }
+
+  showAddPage() {
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (context) {
+          return Hero(
+            tag: 'add',
+            child: SelectAppPage(),
+          );
+        },
+        fullscreenDialog: true,
       ),
     );
-    print("路由返回值：$result");
+  }
+
+  Widget buildDrawerView() {
+    return Container(
+      width: 300,
+      child: ColoredBox(
+        color: AppTheme.nearlyWhite,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  //背景径向渐变
+                  colors: [AppTheme.glacier1, AppTheme.glacier[800]!],
+                  center: Alignment.bottomRight,
+                  radius: 2,
+                ),
+                // color: AppTheme.glacierGrayBlue,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Drawer Header',
+                    style: TextStyle(
+                      color: AppTheme.deepPlumPink,
+                      fontSize: 24,
+                      shadows: [
+                        Shadow(
+                            color: AppTheme.darkBlueGreen,
+                            blurRadius: 1,
+                            offset: Offset(1.5, 1.5))
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      InkWell(
+                        child: Hero(
+                          /// Hero 路由切换动画，需要tag 作为标识才能生效
+                          tag: "avatar",
+                          child: CircleAvatar(
+                            radius: 35.0,
+                            backgroundColor: AppTheme.glacier[500],
+                            child: const Text(
+                              'RS',
+                              textScaleFactor: 2,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(context, PageRouteBuilder(pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: Scaffold(
+                                body: Center(
+                                  child: Hero(
+                                    tag: "avatar",
+                                    child: Container(
+                                      // color: Colors.red,
+                                      width: 300,
+                                      height: 500,
+                                      child: FittedBox(
+                                        fit: BoxFit.fitHeight,
+
+                                        ///fitBox用于约束子类的
+                                        child: GestureDetector(
+                                          child: CircleAvatar(
+                                            radius: 200.0,
+                                            backgroundColor:
+                                            AppTheme.glacier[500],
+                                            child: Text(
+                                              'RS',
+                                              textScaleFactor: 3,
+                                            ),
+                                          ),
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }));
+                        },
+                      ),
+                      Spacer(),
+                      SizedBox(
+                        width: 100,
+                        height: 30,
+                        child: OutlinedButton.icon(
+                            style: ButtonStyle(
+                                alignment: Alignment.centerLeft,
+                                backgroundColor:
+                                MaterialStateProperty.resolveWith((states) {
+                                  if (states.contains(MaterialState.focused) &&
+                                      !states.contains(MaterialState.pressed)) {
+                                    return AppTheme.glacierGrayBlue;
+                                  } else if (states
+                                      .contains(MaterialState.pressed)) {
+                                    return AppTheme.pinkWhite;
+                                  }
+                                  return AppTheme.pinkWhite;
+                                }),
+                                overlayColor:
+                                MaterialStateProperty.resolveWith((states) {
+                                  return AppTheme.glacier[400];
+                                })),
+                            onPressed: () {},
+                            icon: Icon(Icons.edit),
+                            label: Text("Edit")),
+                      )
+                    ],
+                  )
+                ]
+                    .map((e) => Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: e,
+                ))
+                    .toList(),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.message),
+              title: Text('Messages'),
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('Profile'),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+            ),
+            ListTile(
+              leading: Icon(Icons.more),
+              title: Text('More App'),
+              onTap: () => Navigator.pushNamed(context, "new_page"),
+            ),
+            Chip(
+              avatar: CircleAvatar(
+                backgroundColor: AppTheme.glacier[300],
+                child: const Text('RS'),
+              ),
+              label: const Text('Ron Samkulami'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

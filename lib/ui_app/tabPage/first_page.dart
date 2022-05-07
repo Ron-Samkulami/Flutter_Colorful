@@ -1,10 +1,16 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/uiView/custom_tool/keep_alive_wrapper.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/com_buildSliverList.dart';
 
 class FirstPage extends StatefulWidget {
-  // const FirstPage({Key? key}) :super(key: key);
+  const FirstPage({Key? key}) : super(key: key);
+  bool reloadData() {
+    print('FirstPage reloadData');
+    return true;
+  }
 
   @override
   _FirstPageState createState() => _FirstPageState();
@@ -13,11 +19,16 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
-    return TabViewRoute1();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: TabViewRoute1(),
+    );
   }
 }
 
-/// -------------- Page
+/// -------------- Page --------------
 ///
 class Page extends StatefulWidget {
   const Page({Key? key, required this.text}) : super(key: key);
@@ -41,7 +52,7 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 }
 
-/// -------------- TabViewPage
+/// -------------- TabViewPage --------------
 ///
 class TabViewRoute1 extends StatefulWidget {
   @override
@@ -71,7 +82,7 @@ class _TabViewRoute1State extends State<TabViewRoute1>
   }
 }
 
-/// ----
+/// -------------- DefaultFirstPage --------------
 class DefaultFirstPage extends StatefulWidget {
   @override
   _DefaultFirstPageState createState() => _DefaultFirstPageState();
@@ -181,13 +192,13 @@ class _DefaultFirstPageState extends State<DefaultFirstPage>
 List<Widget> getTabBarTabs(List list) {
   return list
       .map((e) => Tab(
-    child: Text(
-      e,
-      style: TextStyle(
-        color: AppTheme.glacier,
-      ),
-    ),
-  ))
+            child: Text(
+              e,
+              style: TextStyle(
+                color: AppTheme.glacier,
+              ),
+            ),
+          ))
       .toList();
 }
 

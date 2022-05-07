@@ -82,6 +82,11 @@ class AppTheme {
   static const Color almostWhite1 = Color(0xFFF0F0F3);
   static const Color grayGreen1 = Color(0xFF8FBDB3);
 
+  static const Color creamBlueGreen = Color.fromARGB(255,46,203,183);
+  static const Color creamPink = Color.fromARGB(255,247,234,226);
+  static const Color creamPurple = Color.fromARGB(255,198,118,199);
+
+
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
     headline5: headline,
@@ -159,22 +164,29 @@ class RSColor {
   final String colorName;
   final Color color;
 
-
   static const RSColor glacier = RSColor("Glacier", AppTheme.glacier);
   static const RSColor creamYellow = RSColor("CreamYellow", AppTheme.creamYellow);
+  static const RSColor creamBlueGreen = RSColor("creamBlueGreen", AppTheme.creamBlueGreen);
+  static const RSColor creamPink = RSColor("creamPink", AppTheme.creamPink);
+  static const RSColor creamPurple = RSColor("creamPurple", AppTheme.creamPurple);
+
+
 }
 
 
 
-//色值字符串转化为颜色
+///十六进制色值字符串转化为整型颜色值
+/// FFFFFFFF => 255255255255 ARGB
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 
+  //十六进制颜色转十进制颜色
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
     if (hexColor.length == 6) {
       hexColor = 'FF' + hexColor;
     }
+    print('颜色$hexColor --${int.parse(hexColor, radix: 16)}');
     return int.parse(hexColor, radix: 16);
   }
 
