@@ -1,0 +1,9 @@
+{
+  "hello": "你好",
+  "confirm": "确认",
+  "cancel": "取消",
+  "change_language": "修改语言",
+  "zh_language": "中文",
+  "en_language": "英文",
+  "Flutter_Demo": "Flutter 模型"
+}

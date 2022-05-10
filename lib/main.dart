@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_app/basic/app_theme.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_app/select_app.dart';
 
-// import'package:flutter/rendering.dart';
-
 import 'package:flutter_app/ui_app/uiApp_home.dart';
+
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,12 +55,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       restorationScopeId: 'Colorfool',
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      // title: S.of(context).Flutter_Demo, //会报错
+      onGenerateTitle: (context){
+        return S.of(context).Flutter_Demo;
+      },
       theme: ThemeData(
         primarySwatch: AppTheme.glacier,
         textTheme: AppTheme.textTheme,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      // locale: const Locale('en', 'US'), //手动指定locale
+      localeListResolutionCallback: (List<Locale>? locales, Iterable<Locale> supportedLocales){
+        //可以判断当前
+        locales?.forEach((element) => print('$element'));
+        print('supportedLocales List as Follow \r');
+        supportedLocales.forEach((element) => print('$element'));
+      },
 
       //路由管理
       //方式1

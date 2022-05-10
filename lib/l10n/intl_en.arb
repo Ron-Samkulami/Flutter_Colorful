@@ -1,0 +1,9 @@
+{
+  "hello": "hello",
+  "confirm": "confirm",
+  "cancel": "cancel",
+  "change_language": "change language",
+  "zh_language": "Chinese",
+  "en_language": "English",
+  "Flutter_Demo": "Flutter Demo"
+}

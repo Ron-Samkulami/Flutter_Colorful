@@ -170,8 +170,8 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
           children: [
             Container(
               color: AppTheme.nearlyWhite,
-              width: 100,
-              height: 350,
+              width: 120,
+              height: 360,
               child: StaggerRoute(),
             ),
             Container(

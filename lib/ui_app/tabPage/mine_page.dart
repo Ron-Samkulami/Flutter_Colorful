@@ -3,6 +3,7 @@ import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/basic/macro.dart';
 
 import 'package:flutter_app/fitness_app/home_drawer.dart';
+import 'package:flutter_app/generated/l10n.dart';
 import 'package:flutter_app/ui_app/uiView/custom_tool/layoutBuilderRoute.dart';
 import 'package:flutter_app/ui_app/uiView/listView/list_view_main.dart';
 
@@ -16,7 +17,6 @@ class MinePage extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final title = 'Mine';
   bool reloadData() {
     print('MinePage reloadData');
     return true;
@@ -35,7 +35,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
           icon: Icon(Icons.forward_outlined),
           onPressed: () => Scaffold.of(context).openDrawer(),
         ),
-        title: Text(widget.title), //这里的widget代表状态所属的类
+        title: Text(S.of(context).Flutter_Demo),
         actions: <Widget>[
           Hero(
               tag: "ColorShowPage",
@@ -67,6 +67,31 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
           iconAnimationController: AnimationController(
               vsync: this, duration: const Duration(milliseconds: 1000)),
         ),
+      ),
+
+      body: Column(
+        children: [
+          Center(child: Text(S.of(context).change_language),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    S.load(Locale.fromSubtags(languageCode: 'zh'));
+                    setState(() {
+                    });
+                  },
+                  child: Text('切换到中文')),
+              ElevatedButton(
+                  onPressed: () {
+                    S.load(Locale.fromSubtags(languageCode: 'en'));
+                    setState(() {
+                    });
+                  },
+                  child: Text('Switch to English'))
+            ],
+          )
+        ],
       ),
     );
   }
