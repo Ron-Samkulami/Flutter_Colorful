@@ -54,7 +54,7 @@ class _RSRotateBoxState extends State<RSRotateBox>
     if (oldWidget.turns != widget.turns) {
       _controller.animateTo(
         widget.turns,
-        duration: Duration(milliseconds: widget.speed??200),
+        duration: Duration(milliseconds: widget.speed>0? widget.speed:200),
         curve: Curves.easeOut,
       );
     }

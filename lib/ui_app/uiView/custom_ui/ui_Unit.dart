@@ -4,6 +4,7 @@ import 'package:flutter_app/ui_app/uiView/custom_ui/flowMenu.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/uiView/animation/animateRoute.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/RS_rotateBox.dart';
+import 'package:flutter_app/rs_widgets/left_right_box.dart';
 
 class UiUnitRoute extends StatefulWidget {
   @override
@@ -26,24 +27,48 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Switch(
-              activeColor: AppTheme.blueGreen,
-              value: _switchSelected, //当前状态
-              onChanged: (value) {
-                //重新构建页面
-                setState(() {
-                  _switchSelected = value;
-                });
-              },
-            ),
-            Checkbox(
-              value: _checkboxSelected,
-              activeColor: AppTheme.blueGreen, //选中时的颜色
-              onChanged: (value) {
-                setState(() {
-                  _checkboxSelected = value!;
-                });
-              },
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 100,
+                maxWidth: 100,
+              ),
+              child: LeftRightBox(
+                children: [
+                  Container(
+                    width: 90,
+                    height: 40,
+                    child: ColoredBox(
+                      color: Colors.red,
+                      child: Switch(
+                        activeColor: AppTheme.blueGreen,
+                        value: _switchSelected, //当前状态
+                        onChanged: (value) {
+                          //重新构建页面
+                          setState(() {
+                            _switchSelected = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 60,
+                    height: 100,
+                    child: ColoredBox(
+                      color: Colors.blue,
+                      child: Checkbox(
+                        value: _checkboxSelected,
+                        activeColor: AppTheme.blueGreen, //选中时的颜色
+                        onChanged: (value) {
+                          setState(() {
+                            _checkboxSelected = value!;
+                          });
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(
               height: 5,
@@ -181,7 +206,10 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                   GestureDetector(
                     onPanUpdate: (DragUpdateDetails details) {
                       setState(() {
-                        _turns += -(details.delta.dx==0?details.delta.dy:details.delta.dx)/10;
+                        _turns += -(details.delta.dx == 0
+                                ? details.delta.dy
+                                : details.delta.dx) /
+                            10;
                       });
                     },
                     child: RSRotateBox(
@@ -192,7 +220,6 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                           size: 50,
                         )),
                   ),
-
                 ],
               ),
             )

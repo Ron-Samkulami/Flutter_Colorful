@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:color_thief_dart/color_thief_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
-import 'package:flutter_app/basic/rs_image_picker.dart';
+import 'package:flutter_app/rs_widgets/rs_image_picker.dart';
 import 'package:flutter_app/basic/rs_image_utils.dart';
 import 'package:image_picker/image_picker.dart';
 

@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: S.delegate.supportedLocales,
       // locale: const Locale('en', 'US'), //手动指定locale
       localeListResolutionCallback: (List<Locale>? locales, Iterable<Locale> supportedLocales){
-        //可以判断当前
+        //可以判断当前q
         locales?.forEach((element) => print('$element'));
         print('supportedLocales List as Follow \r');
         supportedLocales.forEach((element) => print('$element'));
