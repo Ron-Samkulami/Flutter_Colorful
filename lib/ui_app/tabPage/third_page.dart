@@ -1,10 +1,27 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/RS_customPaint.dart';
 import 'package:flutter_app/ui_app/eventBus.dart';
 
 Size chessBoardSize = Size(360,360);
 
+class SafeUpdate {
+  /// 封装一个安全更新的方法，防止在build的过程中调用setState，setState通过fn参数传入
+  void update(VoidCallback fn) {
+    final schedulerPhase = SchedulerBinding.instance!.schedulerPhase;
+    if (schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        fn();
+      });
+    } else {
+      fn();
+    }
+  }
+}
+
+
+///
 class ThirdPage extends StatefulWidget {
   const ThirdPage({
     Key? key,
@@ -19,7 +36,7 @@ class ThirdPage extends StatefulWidget {
   _ThirdPageState createState() => _ThirdPageState();
 }
 
-class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin{
+class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin,SafeUpdate{
 
   bool blackStep = true;
   var blackChessList = <RepaintBoundary>[];
@@ -30,25 +47,23 @@ class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixi
   @override
   void initState() {
     super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-
-    print('重新build');
     bus.on('somebodyWin', (arg) {
-      //由于是在paint时发送事件总线，需要延迟setState，否则会被系统取消
-      Future.delayed(Duration(milliseconds: 50),() {
+      update((){
         setState(() {
           winner = arg == Colors.black ? 'black' : 'white';
         });
       });
     });
 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     if(blackChessList.isEmpty && whiteChessList.isEmpty) {
       reStart();
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text('UI'),
@@ -118,6 +133,7 @@ class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixi
                       setState(() {
                         blackChessList = <RepaintBoundary>[];
                         whiteChessList = <RepaintBoundary>[];
+                        blackStep = true;
                         reStart();
                         winner = '-';
                       });
@@ -131,6 +147,7 @@ class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixi
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.backspace_outlined), onPressed: () {
           setState(() {
@@ -152,5 +169,12 @@ class _ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixi
   bool get wantKeepAlive => true;
   
 
+  @override
+  void dispose() {
+    blackChessList = <RepaintBoundary>[];
+    whiteChessList = <RepaintBoundary>[];
+    super.dispose();
+  }
 
 }
+

@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/eventBus.dart';
 
-
 int rowCount = 15;
 int columnCount = 15;
 Map positions = <Offset, Color>{};
 List placedPositions = <Offset>[];
 bool someBodyWin = false;
+
 class MyChessboardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -33,18 +33,15 @@ void drawChessboard(Canvas canvas, Rect rect) {
     ..color = Color(0xFFDCC48C);
   canvas.drawRect(rect, paint);
 
-  //画棋盘网格
+  //画棋盘网格线
   paint
     ..style = PaintingStyle.stroke //线
     ..color = Colors.black38
     ..strokeWidth = 1.0;
-
-  //画横线
   for (int i = 0; i <= rowCount; ++i) {
     double dy = rect.top + rect.height / rowCount * i;
     canvas.drawLine(Offset(rect.left, dy), Offset(rect.right, dy), paint);
   }
-
   for (int i = 0; i <= columnCount; ++i) {
     double dx = rect.left + rect.width / columnCount * i;
     canvas.drawLine(Offset(dx, rect.top), Offset(dx, rect.bottom), paint);
@@ -63,41 +60,45 @@ class ChessPiecesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // print('ChessPiecesPainter paint');
     var rect = Offset.zero & size;
     double eWidth = rect.width / columnCount;
     double eHeight = rect.height / rowCount;
-    //画棋子
-    var paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = isBlack ? Colors.black : Colors.white;
-
     Offset position = Offset(
         (((drawPosition.dx + eWidth / 2) ~/ eWidth) * eWidth),
         (((drawPosition.dy + eHeight / 2) ~/ eHeight) * eHeight));
 
     if (positions.containsKey(position) == false) {
-
       //绘制棋子
+      var paint = Paint()
+        ..style = PaintingStyle.fill
+        ..color = isBlack ? Colors.black : Colors.white;
       canvas.drawCircle(
         position,
         min(eWidth / 2, eHeight / 2) - 2,
         paint,
       );
 
+      //画棋子上的高光
+      paint
+        ..style = PaintingStyle.stroke //默认是 fill效果
+        ..strokeWidth = 1
+        ..color = isBlack ? Colors.white : Colors.grey[300]!;
+      canvas.drawArc(
+          Rect.fromCircle(
+              center: position, radius: min(eWidth / 2, eHeight / 2) - 5),
+          -2.8,
+          1,
+          false,
+          paint);
+
       //记录当前位置被占用
       positions[position] = paint.color;
 
-      //计算是否5连子
+      //计算是否有玩家胜出，有则通知
       someBodyWin = judgeIsWin(rect, position, paint.color);
-
-      print('判断完成$someBodyWin');
       if (someBodyWin) {
-        //通知
-        bus.emit('somebodyWin',paint.color);
+        bus.emit('somebodyWin', isBlack ? Colors.black : Colors.white);
       }
-
-
     }
   }
 
@@ -255,5 +256,4 @@ bool judgeIsWin(Rect rect, Offset position, Color color) {
   }
 
   return false;
-
 }

@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/uiView/custom_tool/keep_alive_wrapper.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/com_buildSliverList.dart';
+import 'package:flutter_app/rs_widgets/accurate_sized_box.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -21,6 +21,18 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        actions: <Widget>[
+          Center(
+            child: AccurateSizedBox(
+              width: 30,
+              height: 30,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation(Colors.red),
+              ),
+            ),
+          )
+        ],
       ),
       body: TabViewRoute1(),
     );
