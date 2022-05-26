@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/flowMenu.dart';
 
@@ -5,6 +7,7 @@ import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/ui_app/uiView/animation/animateRoute.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/RS_rotateBox.dart';
 import 'package:flutter_app/rs_widgets/left_right_box.dart';
+import 'package:flutter_app/rs_widgets/rs_button.dart';
 
 class UiUnitRoute extends StatefulWidget {
   @override
@@ -88,7 +91,7 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
               ),
             ),
             SizedBox(
-              width: 150,
+              width: 100,
               height: 30,
               child: Flex(
                 direction: Axis.horizontal,
@@ -161,7 +164,7 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
               },
             ),
             ElevatedButton(
-              child: Text("显示底部菜单列表"),
+              child: Text("底部菜单列表"),
               onPressed: () async {
                 String? type = await _showModalBottomSheet();
                 print(type);
@@ -220,6 +223,12 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                           size: 50,
                         )),
                   ),
+                  RaisingButton(
+                    onPressed: () {},
+                    // color: AppTheme.lightPlumPink,
+                    // size: Size(80,100),
+                    child: Text('RS'),
+                  )
                 ],
               ),
             )
@@ -348,3 +357,5 @@ class _StatefulBuilderState extends State<StatefulBuilder> {
   @override
   Widget build(BuildContext context) => widget.builder(context, setState);
 }
+
+
