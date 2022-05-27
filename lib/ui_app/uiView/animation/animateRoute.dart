@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/basic/app_theme.dart';
 
 
 class StaggerRoute extends StatefulWidget {
@@ -36,10 +37,12 @@ class _StaggerRouteState extends State<StaggerRoute>
     return Center(
       child: Column(
         children: [
-
+          SizedBox(
+            height: 8,
+          ),
           Container(
-            width: 300.0,
-            height: 300.0,
+            width: 80.0,
+            height: 120.0,
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.1),
               border: Border.all(
@@ -50,11 +53,24 @@ class _StaggerRouteState extends State<StaggerRoute>
             child: StaggerAnimation(controller: _controller),
           ),
 
-          ElevatedButton(
-            onPressed: () => _playAnimation(),
-            child: Text("start animation"),
+          Padding(
+            padding: EdgeInsets.only(top: 5),
+            child: SizedBox(
+              width: 50,
+              height: 20,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.resolveWith((states) {
+                    if(states.contains(MaterialState.pressed) || states.contains(MaterialState.disabled)) {return 0;}
+                    return 5;
+                  }),
+                  backgroundColor: MaterialStateProperty.resolveWith((states) => AppTheme.deepPlumPink)
+                ),
+                onPressed: () => _playAnimation(),
+                child: Text("Fire",textScaleFactor: 0.5,),
+              ),
+            ),
           ),
-
         ],
       ),
     );
@@ -71,7 +87,7 @@ class StaggerAnimation extends StatelessWidget {
     //高度动画
     height = Tween<double>(
       begin: .0,
-      end: 200.0,
+      end: 80.0,
     ).animate(
       CurvedAnimation(
         parent: controller,
@@ -96,8 +112,8 @@ class StaggerAnimation extends StatelessWidget {
     );
 
     padding = Tween<EdgeInsets>(
-      begin: const EdgeInsets.only(left: 20.0),
-      end: const EdgeInsets.only(left: 60.0),
+      begin: const EdgeInsets.only(left: 10.0),
+      end: const EdgeInsets.only(left: 50.0),
     ).animate(
       CurvedAnimation(
         parent: controller,

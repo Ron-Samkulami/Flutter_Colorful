@@ -1,76 +1,108 @@
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/basic/app_theme.dart';
 
 //双层按钮
-class RaisingButton extends StatefulWidget {
-  const RaisingButton({
+class RSRaisingButton extends StatefulWidget {
+  const RSRaisingButton({
     Key? key,
-    this.size,
-    this.color,
+    this.radius,
+    this.colors,
     required this.onPressed,
     this.onLongPress,
     this.child,
   }) : super(
-    key: key,
-  );
+          key: key,
+        );
 
-  final Size? size;
-  final Color? color;
+  final double? radius;
+  final List<Color>? colors;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final Widget? child;
   @override
-  _RaisingButtonState createState() => _RaisingButtonState();
+  _RSRaisingButtonState createState() => _RSRaisingButtonState();
 }
 
-class _RaisingButtonState extends State<RaisingButton> {
+class _RSRaisingButtonState extends State<RSRaisingButton> {
+  bool showShadow = true;
+
   @override
   Widget build(BuildContext context) {
-    double outerWidth = ((widget.size?.width != null) ? widget.size?.width : 50)!;
-    double outerHeight =
-    ((widget.size?.height != null) ? widget.size?.height : 50)!;
+    double defaultRadius =
+        ((widget.radius != null) ? widget.radius : 50)!;
     return GestureDetector(
+      /// 通过触摸状态控制阴影显示
+      onTapDown: (TapDownDetails details) {
+        print('RSRaisingButton onTapDown');
+        setState(() {
+          showShadow = false;
+        });
+      },
+      onTapUp: (TapUpDetails details) {
+        print('RSRaisingButton onTapUp');
+        setState(() {
+          showShadow = true;
+        });
+      },
+      onTapCancel: () {
+        print('RSRaisingButton onTapCancel');
+        setState(() {
+          showShadow = true;
+        });
+      },
       onTap: widget.onPressed,
+      onLongPress: widget.onLongPress,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          ClipOval(
-            child: Container(
-              width: outerWidth,
-              height: outerHeight,
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  colors: widget.color != null
-                      ? [widget.color!, widget.color!.withOpacity(0.2)]
-                      : [AppTheme.blueGreen2, AppTheme.glacier1],
-                  center: Alignment.bottomRight,
-                  radius: 1,
-                ),
+          Container(
+            width: defaultRadius,
+            height: defaultRadius,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: widget.colors != null
+                    ? widget.colors!
+                    : [AppTheme.blueGreen2, AppTheme.glacier1],
+                center: Alignment.bottomRight,
+                radius: 1,
               ),
+              boxShadow: showShadow
+                  ? [
+                      BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(4.0, 4.0),
+                        blurRadius: 4.0, //8.0
+                      )
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 2.0, //4.0
+                      )
+                    ],
             ),
           ),
           ClipOval(
             child: Container(
-                width: outerWidth * 0.8,
-                height: outerHeight * 0.8,
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: widget.color != null
-                        ? [widget.color!.withOpacity(0.2), widget.color!]
-                        : [AppTheme.glacier1, AppTheme.blueGreen2],
-                    center: Alignment.bottomRight,
-                    radius: 2,
-                  ),
-                )),
-          ),
-          ClipOval(
-            child: Container(
-              width: outerWidth * 0.8,
-              height: outerHeight * 0.8,
+              width: defaultRadius * 0.8,
+              height: defaultRadius * 0.8,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  colors: widget.colors != null
+                      ? widget.colors!
+                      : [AppTheme.blueGreen2, AppTheme.glacier1],
+                  center: Alignment.topLeft,
+                  radius: 1.5,
+                ),
+              ),
               child: Center(
                 child: widget.child,
-              ),),
+              ),
+            ),
           ),
         ],
       ),

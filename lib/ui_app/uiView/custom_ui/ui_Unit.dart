@@ -32,8 +32,8 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 100,
-                maxWidth: 100,
+                maxHeight: 40,
+                maxWidth: 80,
               ),
               child: LeftRightBox(
                 children: [
@@ -41,22 +41,23 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                     width: 90,
                     height: 40,
                     child: ColoredBox(
-                      color: Colors.red,
-                      child: Switch(
-                        activeColor: AppTheme.blueGreen,
-                        value: _switchSelected, //当前状态
-                        onChanged: (value) {
-                          //重新构建页面
-                          setState(() {
+                      color: AppTheme.glacier[600]!,
+                      /// 使用builder创建局部刷新
+                      child: Builder(builder: (BuildContext context) {
+                        return Switch(
+                          activeColor: AppTheme.glacier[300]!,
+                          value: _switchSelected, //当前状态
+                          onChanged: (value) {
                             _switchSelected = value;
-                          });
-                        },
-                      ),
+                            (context as Element).markNeedsBuild();
+                          },
+                        );
+                      },),
                     ),
                   ),
                   Container(
                     width: 60,
-                    height: 100,
+                    height: 80,
                     child: ColoredBox(
                       color: Colors.blue,
                       child: Checkbox(
@@ -73,39 +74,33 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                 ],
               ),
             ),
+            /// 进度条
             SizedBox(
               height: 5,
               width: 100,
               child: LinearProgressIndicator(
                 backgroundColor: Colors.grey[200],
                 valueColor: AlwaysStoppedAnimation(AppTheme.glacierBlue),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-              width: 30,
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation(AppTheme.blueGreen),
                 // value: .7,
               ),
             ),
+            /// FLex
             SizedBox(
-              width: 100,
-              height: 30,
+              width: 80,
+              height: 20,
               child: Flex(
                 direction: Axis.horizontal,
                 children: [
                   Expanded(
                     flex: 1,
                     child: Container(
-                      color: AppTheme.glacier,
+                      color: AppTheme.lightCreamYellow,
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: Container(
-                      color: AppTheme.glacier1,
+                      color: AppTheme.lightPlumPink,
                     ),
                   ),
                   Expanded(
@@ -117,14 +112,12 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                 ],
               ),
             ),
+            ///倾斜渐变色卡片
             Container(
-              margin: EdgeInsets.only(top: 0, left: 30),
-              constraints: BoxConstraints.tightFor(width: 100.0, height: 60),
-              //卡片大小
+              margin: EdgeInsets.only(top: 0, left: 10),
+              constraints: BoxConstraints.tightFor(width: 60.0, height: 30),
               decoration: BoxDecoration(
-                //背景装饰
                 gradient: RadialGradient(
-                  //背景径向渐变
                   colors: [
                     AppTheme.blueGreen2,
                     AppTheme.glacier1,
@@ -134,7 +127,6 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                   radius: 2.2,
                 ),
                 boxShadow: [
-                  //卡片阴影
                   BoxShadow(
                     color: Colors.black54,
                     offset: Offset(2.0, 2.0),
@@ -143,17 +135,15 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                 ],
               ),
               transform: Matrix4.rotationZ(.2),
-              //卡片倾斜变换
               alignment: Alignment.center,
-              //卡片内文字居中
               child: Text(
-                //卡片文字
                 "404",
-                style: TextStyle(color: AppTheme.deepPlumPink, fontSize: 30.0),
+                style: TextStyle(color: AppTheme.deepPlumPink, fontSize: 20.0),
               ),
             ),
+            ///弹窗
             ElevatedButton(
-              child: Text("显示对话框2"),
+              child: Text("安卓弹窗"),
               onPressed: () async {
                 bool? delete = await showDeleteConfirmDialog2();
                 if (delete == null) {
@@ -163,13 +153,15 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                 }
               },
             ),
+            ///模态
             ElevatedButton(
-              child: Text("底部菜单列表"),
+              child: Text("Modal View"),
               onPressed: () async {
                 String? type = await _showModalBottomSheet();
                 print(type);
               },
             ),
+            ///点击事件透传
             Container(
               color: AppTheme.deepPlumPink,
               width: 50,
@@ -184,22 +176,24 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
             )
           ]
               .map((e) => Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     child: e,
                   ))
               .toList(),
         ),
+
         Container(
           width: 80,
           child: FlowMenu(expandOrientation: ExpandOrientation.down),
         ),
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               color: AppTheme.nearlyWhite,
-              width: 120,
-              height: 360,
+              width: 100,
+              height: 200,
               child: StaggerRoute(),
             ),
             Container(
@@ -223,11 +217,17 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                           size: 50,
                         )),
                   ),
-                  RaisingButton(
+
+                  RSRaisingButton(
                     onPressed: () {},
-                    // color: AppTheme.lightPlumPink,
-                    // size: Size(80,100),
                     child: Text('RS'),
+                  ),
+                  SizedBox(height: 10,),
+                  RSRaisingButton(
+                    onPressed: () {},
+                    colors: [AppTheme.deepPlumPink, AppTheme.lightPlumPink],
+                    radius: 40,
+                    child: Text('RS',textScaleFactor: 0.8,),
                   )
                 ],
               ),
@@ -274,29 +274,28 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                     textScaleFactor: 0.9,
                   ),
                   //使用StatefulBuilder来构建StatefulWidget上下文
-                  // StatefulBuilder(
-                  //     builder: (context, _setState) {
-                  //       return Checkbox(value: _withTree, onChanged: (bool? value) {
-                  //         /// _setState方法实际就是该StatefulWidget的setState方法，
-                  //         /// 调用后builder方法会重新被调用
-                  //         _setState((){
-                  //           _withTree = !_withTree;
-                  //         });
-                  //       });
-                  //
-                  //     }),
-
-                  /// 一个更简洁的方式
-                  Builder(builder: (BuildContext context) {
+                  StatefulBuilder(builder: (context, _setState) {
                     return Checkbox(
                         value: _withTree,
                         onChanged: (bool? value) {
-                          (context as Element).markNeedsBuild();
-
-                          ///这里的context只是Checkbox 范围内的context
-                          _withTree = !_withTree;
+                          /// _setState方法实际就是该StatefulWidget的setState方法，
+                          /// 调用后builder方法会重新被调用
+                          _setState(() {
+                            _withTree = !_withTree;
+                          });
                         });
                   }),
+
+                  // /// 一个更简洁据局部更新的方式
+                  // Builder(builder: (BuildContext context) {
+                  //   return Checkbox(
+                  //       value: _withTree,
+                  //       onChanged: (bool? value) {
+                  //         _withTree = !_withTree;
+                  //         ///这里的context只是Checkbox 范围内的context
+                  //         (context as Element).markNeedsBuild();
+                  //       });
+                  // }),
                 ],
               ),
             ],
@@ -344,8 +343,7 @@ class StatefulBuilder extends StatefulWidget {
   const StatefulBuilder({
     Key? key,
     required this.builder,
-  })  : assert(builder != null),
-        super(key: key);
+  }) : super(key: key);
 
   final StatefulWidgetBuilder builder;
 
@@ -357,5 +355,3 @@ class _StatefulBuilderState extends State<StatefulBuilder> {
   @override
   Widget build(BuildContext context) => widget.builder(context, setState);
 }
-
-
