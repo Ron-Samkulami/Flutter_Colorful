@@ -12,6 +12,9 @@ import 'package:flutter_app/ui_app/uiView/custom_ui/RS_customScrollView.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/customSliver.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/nested_scrollView.dart';
 
+import '../../basic/circular_color_picker.dart';
+import '../../basic/rectangle_color_picker.dart';
+
 class MinePage extends StatefulWidget {
   const MinePage({
     Key? key,
@@ -71,25 +74,39 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
       body: Column(
         children: [
-          Center(child: Text(S.of(context).change_language),),
+          Center(
+            child: Text(S.of(context).change_language),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
                   onPressed: () {
                     S.load(Locale.fromSubtags(languageCode: 'zh'));
-                    setState(() {
-                    });
+                    setState(() {});
                   },
                   child: Text('切换到中文')),
               ElevatedButton(
                   onPressed: () {
                     S.load(Locale.fromSubtags(languageCode: 'en'));
-                    setState(() {
-                    });
+                    setState(() {});
                   },
                   child: Text('Switch to English'))
             ],
+          ),
+          RectangleColorPicker(
+              // initialColor: Colors.green,
+              colorWidth: 300,
+              colorHeight: 150,
+              onTapUpListener: (_color) {
+                print('矩形取色-点选-$_color');
+              },
+              colorListener: (_color) {
+                print('矩形取色-拖动-$_color');
+              }),
+          CircularColorPicker(
+            onColorChange: (Color value) { print('圆形取色-拖动-$value');},
+            onColorChangeEnd: (Color value) {print('圆形取色-结束-$value');},
           )
         ],
       ),

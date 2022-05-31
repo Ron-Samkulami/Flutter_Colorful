@@ -12,6 +12,10 @@ import 'package:flutter_app/ui_app/uiApp_home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    //处理错误上报
+    // reportError(details);
+  };
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,

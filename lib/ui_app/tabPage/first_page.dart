@@ -28,7 +28,7 @@ class _FirstPageState extends State<FirstPage> {
               height: 30,
               child: CircularProgressIndicator(
                 strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation(Colors.red),
+                valueColor: AlwaysStoppedAnimation(AppTheme.nearlyWhite),
               ),
             ),
           )
@@ -101,7 +101,7 @@ class DefaultFirstPage extends StatefulWidget {
 
 class _DefaultFirstPageState extends State<DefaultFirstPage>
     with SingleTickerProviderStateMixin {
-  final _toptabs = <String>["资讯", "娱乐"];
+  final _topTabs = <String>["资讯", "娱乐"];
   late List _tabs;
   late List _firstTabs = <String>["新闻", "历史", "图片"];
   late List _secondTabs = <String>["电影", "音乐"];
@@ -115,7 +115,7 @@ class _DefaultFirstPageState extends State<DefaultFirstPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _toptabs.length, vsync: this);
+    _tabController = TabController(length: _topTabs.length, vsync: this);
     _tabController.addListener(() {});
 
     //第一Tab
@@ -185,7 +185,7 @@ class _DefaultFirstPageState extends State<DefaultFirstPage>
                     _tabBody = index == 0 ? _firstTabBody : _secondTabBody;
                   });
                 },
-                tabs: getTabBarTabs(_toptabs),
+                tabs: getTabBarTabs(_topTabs),
               ),
             ),
             Container(
