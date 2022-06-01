@@ -300,7 +300,7 @@ class Thumb extends StatelessWidget {
                 size: _thumbSize,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(_thumbSize / 2),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 0.1, //阴影范围

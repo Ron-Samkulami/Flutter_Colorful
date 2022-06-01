@@ -51,7 +51,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                         opacity: animation,
 
                         ///Hero 不能作为另一个 Hero 的子组件，
-                        ///如果RSCustomScrollView页面中有其它Hero动画组件，如floatingActionButton，会出问题
+                        ///ColorShowPage，如floatingActionButton，会出问题
                         child: Hero(
                           tag: "ColorShowPage",
                           child: ColorShowPage(rsColor: RSColor.creamYellow),
@@ -105,8 +105,12 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                 print('矩形取色-拖动-$_color');
               }),
           CircularColorPicker(
-            onColorChange: (Color value) { print('圆形取色-拖动-$value');},
-            onColorChangeEnd: (Color value) {print('圆形取色-结束-$value');},
+            onColorChange: (Color value) {
+              print('圆形取色-拖动-$value');
+            },
+            onColorChangeEnd: (Color value) {
+              print('圆形取色-结束-$value');
+            },
           )
         ],
       ),
@@ -173,10 +177,12 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
         });
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<popMenuItem>>[
-        const PopupMenuItem<popMenuItem>(
+        PopupMenuItem<popMenuItem>(
           value: popMenuItem.item1,
           child: Text('InfiniteListView'),
-          // onTap: () => print("item上的点击事件");,  //const修饰时，不能写onTap，onTap内无法完成跳转
+          onTap: () {
+            print("item上的点击事件");
+          }, //const修饰时，不能写onTap，onTap内无法完成跳转
         ),
         const PopupMenuItem<popMenuItem>(
           value: popMenuItem.item2,

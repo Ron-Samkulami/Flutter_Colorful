@@ -53,7 +53,7 @@ class _NestedScrollViewPageState extends State<NestedScrollViewPage> {
           return RepaintBoundary(
             child: CustomScrollView(
               slivers: <Widget>[
-                rsColorDisplay(12),
+                rsColorDisplay(10),
               ],
             ),
           );

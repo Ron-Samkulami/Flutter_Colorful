@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_app/basic/app_theme.dart';
 import 'package:flutter_app/generated/l10n.dart';
-import 'package:flutter_app/select_app.dart';
 
 import 'package:flutter_app/ui_app/uiApp_home.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+
+import 'package:flutter_app/select_app.dart';
+import 'package:flutter_app/ui_app/pages/chessGamePage.dart';
 
 void main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -87,6 +90,7 @@ class MyApp extends StatelessWidget {
       //方式1
       routes: {
         "new_page":(context) => SelectAppPage(),
+        "chess_game_Page":(context) => ChessGamePage(),
       },
       //方式2
       // onGenerateRoute: (RouteSettings settings) {

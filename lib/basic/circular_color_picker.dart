@@ -13,8 +13,7 @@ class CircularColorPicker extends StatefulWidget {
       this.size = 350,
       this.thumbSize = 25,
       required this.onColorChange,
-      required this.onColorChangeEnd}
-      )
+      required this.onColorChangeEnd})
       : super(key: key);
 
   @override
@@ -46,13 +45,14 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      width: widget.size+40,
-      height: widget.size+40,
+      width: widget.size + 40,
+      height: widget.size + 40,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Container(
-            width: widget.size+40,
-            height: widget.size+40,
+            width: widget.size + 40,
+            height: widget.size + 40,
             alignment: Alignment.center,
             child: GestureDetector(
               onPanDown: onPanDown,
@@ -66,7 +66,7 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
                   alignment: Alignment.center,
                   children: [
                     Transform.rotate(
-                      angle:pi,
+                      angle: pi,
                       child: CustomPaint(
                         painter: CircularColorPainter(
                           color: color,
@@ -80,40 +80,76 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
                         ),
                       ),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.wb_sunny_sharp,color: Color.fromRGBO(183, 202, 208, 1.0)),
-                            Text('Warm',style: TextStyle(color: Color.fromRGBO(183, 202, 208, 1.0)),),
-                            Text('White',style: TextStyle(color: Color.fromRGBO(183, 202, 208, 1.0)),),
-                          ],
-                        ),
-                        SizedBox(width: 15,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.brightness_2_sharp,color: Color.fromRGBO(183, 202, 208, 1.0)),
-                            Text('Cool',style: TextStyle(color: Color.fromRGBO(183, 202, 208, 1.0)),),
-                            Text('White',style: TextStyle(color: Color.fromRGBO(183, 202, 208, 1.0)),),
-                          ],
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.center,
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         Icon(Icons.wb_sunny_sharp,
+                    //             color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         Text(
+                    //           'Warm',
+                    //           style: TextStyle(
+                    //               color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         ),
+                    //         Text(
+                    //           'White',
+                    //           style: TextStyle(
+                    //               color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     SizedBox(
+                    //       width: 15,
+                    //     ),
+                    //     Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.center,
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         Icon(Icons.brightness_2_sharp,
+                    //             color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         Text(
+                    //           'Cool',
+                    //           style: TextStyle(
+                    //               color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         ),
+                    //         Text(
+                    //           'White',
+                    //           style: TextStyle(
+                    //               color: Color.fromRGBO(183, 202, 208, 1.0)),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
             ),
           ),
+          IgnorePointer(
+            child: Container(
+              width: widget.size,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    center: Alignment.center, // near the top right
+                    radius: 0.5,
+                    colors: <Color>[
+                      Colors.white,
+                      Colors.white.withAlpha(0),
+                    ],
+                    // stops: <double>[0.1, 1.0],
+                  )),
+            ),
+          ),
           Thumb(
-            top: currentOffset.dy+20,
-            left: currentOffset.dx+20,
-            thumbSize:widget.thumbSize,
+            top: currentOffset.dy + 20,
+            left: currentOffset.dx + 20,
+            thumbSize: widget.thumbSize,
             color: color,
           ),
         ],
@@ -147,6 +183,7 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
     setState(() {
       position = Offset(details.localPosition.dx, details.localPosition.dy);
     });
+    // 计算弧度
     double cosA;
     double x = (sqrt(pow((topPosition.dx - center.dx), 2) +
         pow((topPosition.dy - center.dy), 2)));
@@ -162,9 +199,12 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
     } else if (quadrant == 2 || quadrant == 3) {
       radians = 2 * pi - acos(cosA);
     }
+    //计算颜色
     hue = 360 * radians / (2 * pi);
-    // print('radians:${radians} hue:${hue}');
-    color = HSVColor.fromAHSV(1, hue, 1, 1).toColor();
+    color = HSVColor.fromAHSV((2*y)/widget.size, hue, 1, 1).toColor();
+    // color = HSVColor.fromAHSV(1, hue, 1, 1).toColor();
+
+    //计算位置
     if (y <= center.dx) {
       currentOffset =
           Offset(details.localPosition.dx, details.localPosition.dy);
@@ -175,13 +215,14 @@ class _CircularColorPickerState extends State<CircularColorPicker> {
       double ratio = radius / distance;
       currentOffset = Offset(dx * ratio + center.dx, dy * ratio + center.dy);
     }
-    if (y <= center.dx / 2) {
-      if (position.dx < widget.size / 2) {
-        color = Color.fromRGBO(252, 238, 214, 1.0);
-      } else {
-        color = Color.fromRGBO(220, 244, 255, 1.0);
-      }
-    }
+    // 中间两种白色
+    // if (y <= center.dx / 2) {
+    //   if (position.dx < widget.size / 2) {
+    //     color = Color.fromRGBO(252, 238, 214, 1.0);
+    //   } else {
+    //     color = Color.fromRGBO(220, 244, 255, 1.0);
+    //   }
+    // }
   }
 }
 
@@ -191,7 +232,8 @@ class CircularColorPainter extends CustomPainter {
   Offset center;
   late List<Color>? colorList;
 
-  CircularColorPainter({required this.color, required this.center, required this.radius});
+  CircularColorPainter(
+      {required this.color, required this.center, required this.radius});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -206,7 +248,7 @@ class CircularColorPainter extends CustomPainter {
     Paint _paint3 = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
-      ..color = Colors.black;
+      ..color = Colors.grey;
     Paint _paint4 = Paint()
       ..style = PaintingStyle.fill
       ..strokeWidth = 0
@@ -227,22 +269,26 @@ class CircularColorPainter extends CustomPainter {
       colors: colorList!.map((e) => e).toList(),
     );
 
+    //外晕光圈
     _paint4..maskFilter = MaskFilter.blur(BlurStyle.outer, 50);
     canvas.drawArc(Rect.fromLTWH(0, 0, radius * 2, radius * 2), -pi / 2, pi * 2,
         false, _paint4);
+    // 色环
     var rect = Rect.fromLTWH(0, 0, radius * 2, radius * 2);
     _paint.shader = gradient.createShader(rect);
     canvas.drawCircle(center, radius, _paint);
-    var rect2 = Rect.fromLTWH(radius / 2, radius / 2, radius, radius);
-    _paint2.color = Color.fromRGBO(252, 238, 214, 1.0);
-    canvas.drawArc(rect2, -pi / 2, pi, true, _paint2);
-    _paint2.color = Color.fromRGBO(220, 244, 255, 1.0);
-    canvas.drawArc(rect2, pi / 2, pi, true, _paint2);
-    _paint3.color = Colors.grey;
-    canvas.drawCircle(center, radius / 2, _paint3);
-    canvas.drawLine(Offset(radius, radius / 2),
-        Offset(radius, radius + radius / 2), _paint3);
-    canvas.drawCircle(center, radius+10, _paint3);
+    // 中间两个半圆
+    // var rect2 = Rect.fromLTWH(radius / 2, radius / 2, radius, radius);
+    // _paint2.color = Color.fromRGBO(252, 238, 214, 1.0);
+    // canvas.drawArc(rect2, -pi / 2, pi, true, _paint2);
+    // _paint2.color = Color.fromRGBO(220, 244, 255, 1.0);
+    // canvas.drawArc(rect2, pi / 2, pi, true, _paint2);
+    // 中间两个半圆界线
+    // canvas.drawCircle(center, radius / 2, _paint3);
+    // canvas.drawLine(Offset(radius, radius / 2),
+    //     Offset(radius, radius + radius / 2), _paint3);
+    // // 最外线圈
+    // canvas.drawCircle(center, radius + 10, _paint3);
   }
 
   @override
@@ -282,7 +328,7 @@ class Thumb extends StatelessWidget {
             size: _thumbSize,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(_thumbSize/2),
+            borderRadius: BorderRadius.circular(_thumbSize / 2),
             boxShadow: [
               BoxShadow(
                 blurRadius: 0.1, //阴影范围
