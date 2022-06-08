@@ -8,6 +8,7 @@ import 'package:flutter_app/ui_app/uiView/animation/animateRoute.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/RS_rotateBox.dart';
 import 'package:flutter_app/rs_widgets/left_right_box.dart';
 import 'package:flutter_app/rs_widgets/rs_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UiUnitRoute extends StatefulWidget {
   @override
@@ -219,12 +220,29 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
                   ),
 
                   RSRaisingButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      launchUrl(Uri.https('qc844vicw2.feishu.cn', '/docs/doccn0mgMZ5wsIOgtfZxfVlXIeg'));
+                    },
                     child: Text('RS'),
                   ),
                   SizedBox(height: 10,),
                   RSRaisingButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // launchUrl(Uri.parse('sms:1234567'));
+                      // launchUrl(Uri.parse('tel:1234567'));
+                      launchUrl(Uri.parse('weixin://'));
+
+                      //使用http和https之外的uri，要手动对参数进行编码
+                      final Uri emailLaunchUri = Uri(
+                        scheme: 'mailto',
+                        path: '1402434985@qq.com',
+                        query: encodeQueryParameters(<String, String>{
+                          'subject': 'Example Subject & Symbols are allowed!'
+                        }),
+                      );
+                      launchUrl(emailLaunchUri);
+
+                    },
                     colors: [AppTheme.deepPlumPink, AppTheme.lightPlumPink],
                     radius: 40,
                     child: Text('RS',textScaleFactor: 0.8,),
@@ -336,6 +354,16 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
       },
     );
   }
+
+
+
+}
+
+/// 编码请求参数
+String? encodeQueryParameters(Map<String, String> params) {
+  return params.entries
+      .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
 }
 
 /// StatefulBuilder
