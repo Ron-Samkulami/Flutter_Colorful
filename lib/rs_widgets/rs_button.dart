@@ -10,6 +10,8 @@ class RSRaisingButton extends StatefulWidget {
     this.radius,
     this.colors,
     required this.onPressed,
+    this.onTapDown,
+    this.onTapCancel,
     this.onLongPress,
     this.child,
   }) : super(
@@ -19,6 +21,8 @@ class RSRaisingButton extends StatefulWidget {
   final double? radius;
   final List<Color>? colors;
   final VoidCallback? onPressed;
+  final VoidCallback? onTapDown;
+  final VoidCallback? onTapCancel;
   final VoidCallback? onLongPress;
   final Widget? child;
   @override
@@ -36,6 +40,7 @@ class _RSRaisingButtonState extends State<RSRaisingButton> {
       /// 通过触摸状态控制阴影显示
       onTapDown: (TapDownDetails details) {
         print('RSRaisingButton onTapDown');
+        widget.onTapDown?.call();
         setState(() {
           showShadow = false;
         });
@@ -48,6 +53,7 @@ class _RSRaisingButtonState extends State<RSRaisingButton> {
       },
       onTapCancel: () {
         print('RSRaisingButton onTapCancel');
+        widget.onTapCancel?.call();
         setState(() {
           showShadow = true;
         });

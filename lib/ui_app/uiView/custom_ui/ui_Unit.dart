@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/ui_app/uiView/custom_ui/flowMenu.dart';
 
 import 'package:flutter_app/basic/app_theme.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_app/ui_app/uiView/custom_ui/RS_rotateBox.dart';
 import 'package:flutter_app/rs_widgets/left_right_box.dart';
 import 'package:flutter_app/rs_widgets/rs_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 class UiUnitRoute extends StatefulWidget {
   @override
@@ -221,6 +223,15 @@ class _UiUnitRouteState extends State<UiUnitRoute> {
 
                   RSRaisingButton(
                     onPressed: () {
+                    vibrateOne();
+                    },
+                    onTapDown: vibrateOne,
+                    onTapCancel: vibrateOne,
+
+                  ),
+                  SizedBox(height: 10,),
+                  RSRaisingButton(
+                    onPressed: () {
                       launchUrl(Uri.https('qc844vicw2.feishu.cn', '/docs/doccn0mgMZ5wsIOgtfZxfVlXIeg'));
                     },
                     child: Text('RS'),
@@ -382,4 +393,14 @@ class StatefulBuilder extends StatefulWidget {
 class _StatefulBuilderState extends State<StatefulBuilder> {
   @override
   Widget build(BuildContext context) => widget.builder(context, setState);
+}
+
+void vibrateOne() async {
+  bool canVibrate = await Vibrate.canVibrate;
+  if(canVibrate) {
+    var _type = FeedbackType.light;
+    Vibrate.feedback(_type);
+    // MethodChannel('vibrate').invokeMethod('impact');
+
+  }
 }
